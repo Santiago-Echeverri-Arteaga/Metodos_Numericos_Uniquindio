@@ -1,0 +1,10 @@
+# Archivos No necesarios
+~$Clase1.pptx
+*.key
+
+#Entorno
+.env
+
+#Configguration Files
+__pycache__/
+settings.json
