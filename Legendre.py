@@ -48,3 +48,16 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# from functools import lru_cache
+
+
+# @lru_cache(maxsize=None)
+# def legendre_recursive(n, x):
+#    if n == 0:
+#        return 1.0
+#    elif n == 1:
+#        return x
+#    else:
+#        return ((2 * n - 1) * x * legendre_recursive(n - 1, x) -
+#                (n - 1) * legendre_recursive(n - 2, x)) / n
