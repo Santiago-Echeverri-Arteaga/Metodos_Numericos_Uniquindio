@@ -6,6 +6,15 @@ import cmath
 
 
 def hermite(n, x):
+    """Calcula el n-ésimo polinomio de Hermite para un x dado
+
+    Args:
+        n (int): Grado del polinomio
+        x (float): Valor a evaluar el polinomio
+
+    Returns:
+        float: H_n(x)
+    """
     val0 = 1.
     val1 = 2*x
     for j in range(1, n):
