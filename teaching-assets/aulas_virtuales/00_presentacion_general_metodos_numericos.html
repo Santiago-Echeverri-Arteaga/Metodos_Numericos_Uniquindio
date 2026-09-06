@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Métodos Numéricos para Física</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>
+    :root {
+      --mn-verde: #176b4d;
+      --mn-verde-oscuro: #0f4f39;
+      --mn-verde-claro: #e8f5ef;
+      --mn-azul: #22577a;
+      --mn-borde: #718096;
+      --mn-fondo: #f7faf9;
+      --mn-texto: #1f2937;
+      --mn-blanco: #ffffff;
+      --mn-alerta: #fff7df;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 1.5rem 2.2rem 4rem;
+      color: var(--mn-texto);
+      background: var(--mn-blanco);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.62;
+    }
+
+    h1, h2, h3, h4 { line-height: 1.25; }
+
+    h1 {
+      margin: .5rem 0 1.5rem;
+      padding-bottom: .7rem;
+      color: var(--mn-verde-oscuro);
+      border-bottom: 4px solid var(--mn-verde);
+      font-size: 2rem;
+    }
+
+    h2 {
+      margin-top: 2.25rem;
+      padding: .48rem .75rem;
+      color: var(--mn-verde-oscuro);
+      background: var(--mn-verde-claro);
+      border-left: 5px solid var(--mn-verde);
+      font-size: 1.45rem;
+    }
+
+    h3 { margin-top: 1.7rem; color: var(--mn-azul); font-size: 1.2rem; }
+    h4 { color: #315f72; }
+
+    p, li { max-width: 96ch; }
+    li + li { margin-top: .25rem; }
+
+    a { color: #145f8c; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    a:hover { color: #0b405f; }
+
+    blockquote,
+    .nota {
+      margin: 1.25rem 0;
+      padding: .9rem 1.1rem;
+      color: #234437;
+      background: #f0f8f4;
+      border-left: 5px solid var(--mn-verde);
+      border-radius: 0 6px 6px 0;
+    }
+
+    .advertencia {
+      margin: 1.25rem 0;
+      padding: .9rem 1.1rem;
+      background: var(--mn-alerta);
+      border-left: 5px solid #c88719;
+      border-radius: 0 6px 6px 0;
+    }
+
+    code {
+      padding: .1rem .28rem;
+      border-radius: 4px;
+      color: #8b1e3f;
+      background: #eef1f4;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: .92em;
+    }
+
+    pre {
+      overflow-x: auto;
+      padding: 1rem 1.1rem;
+      border: 1px solid #cbd5df;
+      border-radius: 7px;
+      background: #f6f8fa;
+      line-height: 1.45;
+    }
+
+    pre code { padding: 0; color: #1f2937; background: transparent; }
+
+    .table-responsive {
+      width: 100%;
+      margin: 1.2rem 0 1.6rem;
+      overflow-x: auto;
+      border-radius: 7px;
+      box-shadow: 0 1px 4px rgba(23, 78, 57, .15);
+    }
+
+    table.course-table {
+      width: 100%;
+      min-width: 640px;
+      margin: 0;
+      border: 1px solid var(--mn-borde);
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    table.course-table th,
+    table.course-table td {
+      padding: .62rem .72rem;
+      border: 1px solid var(--mn-borde) !important;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table.course-table thead th {
+      color: #fff;
+      background: var(--mn-verde-oscuro);
+      font-weight: 700;
+    }
+
+    table.course-table tbody tr:nth-child(even) td { background: #f3f8f5; }
+    table.course-table tbody tr:hover td { background: #e5f2eb; }
+
+    .formula {
+      display: block;
+      max-width: 100%;
+      margin: .8rem 0;
+      padding: .7rem .9rem;
+      overflow-x: auto;
+      border: 1px solid #c8d5cf;
+      border-radius: 5px;
+      background: var(--mn-fondo);
+      color: #173f31;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      white-space: nowrap;
+    }
+
+    .course-footer {
+      margin-top: 3rem;
+      padding: 1rem 1.2rem;
+      color: #26483a;
+      background: var(--mn-verde-claro);
+      border-top: 3px solid var(--mn-verde);
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 1rem 1rem 3rem; font-size: 15px; }
+      h1 { font-size: 1.65rem; }
+      h2 { font-size: 1.3rem; }
+    }
+
+    @media print {
+      body { max-width: none; padding: 0; font-size: 10.5pt; }
+      h2 { break-after: avoid; }
+      pre, blockquote, table { break-inside: avoid; }
+      .table-responsive { overflow: visible; box-shadow: none; }
+      table.course-table { min-width: 0; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+<!-- Sin barra de navegación: este archivo se utiliza como recurso independiente en Moodle. -->
+<h1 id="métodos-numéricos-para-física">Métodos Numéricos para
+Física</h1>
+<h2 id="presentación-del-espacio-académico">Presentación del espacio
+académico</h2>
+<p>Los métodos numéricos permiten construir respuestas aproximadas
+cuando un problema físico no tiene una solución analítica accesible,
+cuando los datos solo están disponibles en forma discreta o cuando la
+complejidad del modelo hace necesario el cálculo computacional. El
+propósito del curso no es coleccionar fórmulas: es aprender a
+seleccionar un método, implementarlo, estimar su error, reconocer cuándo
+puede fallar y justificar si el resultado es físicamente razonable.</p>
+<p>El curso recorre una secuencia que va desde la aritmética finita y el
+análisis de errores hasta la solución aproximada de ecuaciones
+diferenciales. Python será el medio de experimentación: permitirá
+comparar métodos, observar convergencia, estudiar estabilidad y
+contrastar resultados con soluciones conocidas o con implementaciones de
+referencia.</p>
+<blockquote>
+<p><strong>Documentos del curso:</strong> este recurso acompaña las
+notas de clase de Métodos Numéricos, el acta de concertación académica
+2026-2 y el libro de Alex Gezerlis, <em>Numerical Methods in Physics
+with Python</em>, 2.ª edición, Cambridge University Press, 2023. Los PDF
+deben publicarse junto con estos materiales en Moodle.</p>
+</blockquote>
+<h2 id="identificación">Identificación</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Campo</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Información</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Facultad</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ciencias Básicas y Tecnologías</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Programa</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Física</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Espacio académico</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Métodos Numéricos</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Grupo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">01</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Jornada</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Diurna</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Período académico</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">2026-2</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Profesor</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Santiago Echeverri Arteaga</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Correo institucional</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><a
+href="mailto:secheverri@uniquindio.edu.co">secheverri@uniquindio.edu.co</a></td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Herramienta principal</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Python y su ecosistema científico</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Medio principal del curso</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Moodle / Aulas Virtuales</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="propósito-formativo">Propósito formativo</h2>
+<p>Al finalizar el curso, el estudiante deberá poder formular un
+problema numérico a partir de una situación física, identificar sus
+fuentes de error, escoger un algoritmo adecuado, implementarlo de manera
+clara, comprobar su convergencia y comunicar las limitaciones de la
+respuesta obtenida.</p>
+<p>Una solución numérica completa debe responder, como mínimo, cinco
+preguntas:</p>
+<ol type="1">
+<li>¿Qué problema matemático representa la situación física?</li>
+<li>¿Qué información de entrada se conoce y con qué precisión?</li>
+<li>¿Qué método se emplea y bajo qué condiciones funciona?</li>
+<li>¿Cómo se estima o verifica el error?</li>
+<li>¿Qué evidencia permite confiar en el resultado?</li>
+</ol>
+<h2 id="resultados-de-aprendizaje">Resultados de aprendizaje</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">N.º</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Al finalizar el curso, el estudiante podrá…</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evidencia esperada</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">1</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Diferenciar error de medición, redondeo, truncamiento y
+propagación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cálculo de errores y explicación de su origen</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">2</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Analizar estabilidad, convergencia y condicionamiento</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comparación cuantitativa entre métodos o formulaciones</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">3</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aproximar derivadas y seleccionar un tamaño de paso
+justificable</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Tabla o gráfica de error frente al paso</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">4</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Resolver sistemas lineales y problemas de valores propios</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Implementación, residuo y análisis del condicionamiento</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">5</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Localizar ceros y mínimos de funciones escalares o sistemas</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Criterios de parada, historial de iteraciones y residuo</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">6</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Interpolar datos y construir modelos por mínimos cuadrados</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Validación sobre datos no usados o análisis de residuos</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">7</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aproximar integrales mediante reglas deterministas y Monte
+Carlo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estudio de convergencia y estimación de incertidumbre</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">8</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Resolver problemas de valores iniciales y reconocer problemas de
+frontera</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comparación con solución exacta, refinamiento o invariantes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">9</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Diseñar experimentos computacionales reproducibles</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Código organizado, parámetros explícitos y resultados
+verificables</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">10</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Interpretar numéricamente un resultado dentro de su contexto
+físico</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Unidades, órdenes de magnitud, límites y discusión</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="organización-por-unidades">Organización por unidades</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Unidad</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Núcleo temático</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Métodos y productos principales</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Texto de referencia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">1</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error numérico y representación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error absoluto/relativo, propagación, punto flotante, cancelación,
+estabilidad</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Gezerlis, cap. 2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">2</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Derivación numérica y automática</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Diferencias finitas, elección de paso, extrapolación, números
+duales</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Gezerlis, cap. 3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">3</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Álgebra lineal numérica</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Normas, condicionamiento, sistemas triangulares, eliminación,
+métodos iterativos, valores propios</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Gezerlis, cap. 4</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">4</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ceros y minimización</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Bisección, punto fijo, Newton, secante, Ridder, sistemas no lineales
+y búsqueda de mínimos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Gezerlis, cap. 5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">5</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aproximación, interpolación y ajuste</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Lagrange, nodos de Chebyshev, splines, mínimos cuadrados y
+residuos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Gezerlis, cap. 6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">6</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Integración numérica</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Newton-Cotes, trapecio, Simpson, adaptación, Gauss-Legendre y Monte
+Carlo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Gezerlis, cap. 7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">7</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ecuaciones diferenciales</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Euler, Runge-Kutta, sistemas, estabilidad, frontera y problemas de
+valores propios</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Gezerlis, cap. 8</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="ruta-sugerida-por-cortes">Ruta sugerida por cortes</h2>
+<p>La secuencia concreta puede ajustarse según las directrices
+institucionales y el avance del grupo. La siguiente tabla organiza los
+contenidos de manera coherente con las tres evaluaciones
+concertadas.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Corte</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Unidades principales</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Trabajo de preparación</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evaluación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Primero</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">1. Error numérico y 2. Derivación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ejercicios de propagación, experimentos con punto flotante,
+diferencias finitas y extrapolación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Parcial 1 — 30/09/2026</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Segundo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">3. Álgebra lineal y 4. Ceros/minimización</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Sistemas lineales, residuos, condicionamiento, iteraciones de raíces
+y búsqueda de mínimos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Parcial 2 — 28/10/2026</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Tercero</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">5. Aproximación, 6. Integración y 7. Ecuaciones diferenciales</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Interpolación, ajuste, cuadratura, Monte Carlo, problemas de valores
+iniciales y sistemas</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Parcial 3 — 20/11/2026</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="plan-de-evaluación-concertado">Plan de evaluación
+concertado</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Fecha</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estrategia evaluativa</th>
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Porcentaje</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">30/09/2026</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Parcial 1</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">33,4 %</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">28/10/2026</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Parcial 2</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">33,3 %</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">20/11/2026</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Parcial 3</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">33,3 %</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"></td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><strong>Total</strong></td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><strong>100 %</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>Los parciales se realizarán mediante Aulas Virtuales. Las fechas y
+condiciones pueden cambiar si la Universidad emite nuevas directrices.
+Cualquier modificación deberá comunicarse por los canales
+institucionales.</p>
+<h2 id="estructura-recomendada-de-cada-parcial">Estructura recomendada
+de cada parcial</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Tipo de desempeño</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Qué debe demostrar el estudiante</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comprensión conceptual</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Explicar por qué funciona un método y reconocer sus supuestos</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Trazado de algoritmo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Seguir iteraciones, estimar el siguiente valor y detectar
+errores</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Implementación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Completar o escribir una función corta con una interfaz
+definida</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Análisis de error</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estimar orden, residuo, error absoluto/relativo o sensibilidad</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Decisión metodológica</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Elegir entre dos métodos y justificar el criterio</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Interpretación física</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Revisar unidades, signos, límites y plausibilidad del resultado</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="metodología-de-trabajo">Metodología de trabajo</h2>
+<p>Cada tema se estudiará mediante un ciclo de cinco momentos:</p>
+<ol type="1">
+<li><strong>Problema:</strong> se plantea una situación física o
+matemática que no se resuelve de forma directa.</li>
+<li><strong>Modelo:</strong> se identifican variables, unidades,
+ecuaciones, datos, condiciones y cantidad buscada.</li>
+<li><strong>Método:</strong> se deriva o explica el algoritmo y se
+anticipa su error.</li>
+<li><strong>Experimento computacional:</strong> se implementa, prueba y
+compara el método en Python.</li>
+<li><strong>Validación:</strong> se usa una solución exacta, un residuo,
+una ley de conservación, refinamiento de malla o una biblioteca
+confiable.</li>
+</ol>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Momento de una clase</th>
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Duración orientativa</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Producto verificable</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Activación y predicción</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">10–15 min</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Hipótesis o estimación previa</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Desarrollo conceptual</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">25–35 min</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Derivación, esquema o tabla de decisión</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Implementación guiada</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">30–45 min</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Función pequeña y casos de prueba</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Experimentación</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">20–30 min</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Tabla o gráfica de convergencia</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cierre</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">10–15 min</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Conclusión sustentada por evidencia</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="protocolo-para-resolver-un-problema-numérico">Protocolo para
+resolver un problema numérico</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Etapa</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pregunta de control</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evidencia mínima</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">1. Formular</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cuál es la entrada, la salida y la ecuación?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Variables, unidades y dominio</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">2. Anticipar</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Qué orden de magnitud y signo se esperan?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estimación manual</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">3. Seleccionar</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Qué condiciones exige el método?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Justificación de la elección</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">4. Implementar</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿La función tiene entradas y salidas claras?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Código legible y casos simples</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">5. Verificar</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Qué residuo, error o invariante se puede calcular?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Métrica cuantitativa</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">6. Refinar</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Qué cambia al reducir el paso o aumentar iteraciones?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estudio de convergencia</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">7. Comunicar</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Qué tan confiable es la respuesta?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Resultado con unidades y limitaciones</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="requisitos-mínimos-del-código">Requisitos mínimos del
+código</h2>
+<ul>
+<li>Evitar valores físicos ocultos dentro de las funciones.</li>
+<li>Documentar entradas, salidas, unidades y restricciones.</li>
+<li>Separar cálculo, visualización y lectura de datos.</li>
+<li>Incluir criterios de parada y un número máximo de iteraciones.</li>
+<li>Comprobar valores no finitos (<code>NaN</code>, <code>inf</code>)
+cuando puedan aparecer.</li>
+<li>Conservar el historial de iteraciones cuando sea útil para
+diagnosticar.</li>
+<li>Comparar contra un caso conocido antes de confiar en un caso
+nuevo.</li>
+<li>Explicar por qué una gráfica o tabla demuestra lo que se
+afirma.</li>
+</ul>
+<h2 id="plantilla-de-una-experiencia-computacional">Plantilla de una
+experiencia computacional</h2>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> metodo(datos, tolerancia<span class="op">=</span><span class="fl">1e-8</span>, max_iter<span class="op">=</span><span class="dv">100</span>):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Devuelve aproximación, diagnóstico e historial.&quot;&quot;&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Validar entradas</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Construir aproximación inicial</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3. Iterar y registrar una métrica de error o residuo</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 4. Detener por convergencia o por límite de iteraciones</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 5. Devolver información suficiente para verificar</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">NotImplementedError</span></span></code></pre></div>
+<p>La interfaz anterior no es una receta universal. Su función es
+recordar que un método científico debe devolver algo más que un número:
+también debe informar si convergió, con qué criterio y bajo qué
+parámetros.</p>
+<h2 id="estrategias-de-validación">Estrategias de validación</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estrategia</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aplicación típica</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pregunta clave</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Solución exacta</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Problemas de prueba</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿El error disminuye como predice la teoría?</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Residuo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Sistemas, raíces y ecuaciones diferenciales</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿La aproximación satisface la ecuación?</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Refinamiento</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Derivación, integración y EDO</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿El resultado se estabiliza al reducir el paso?</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Método independiente</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cualquier unidad</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Dos métodos distintos coinciden dentro de la tolerancia?</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Invariante físico</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Dinámica y sistemas conservativos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Se conserva energía, norma, masa u otra cantidad?</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Orden de magnitud</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Todo problema físico</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿El valor es plausible antes de mirar decimales?</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="uso-responsable-de-herramientas-computacionales">Uso responsable
+de herramientas computacionales</h2>
+<p>Las bibliotecas científicas son referencias útiles, pero no
+reemplazan la comprensión. Cuando se utilice una función de NumPy, SciPy
+u otra herramienta, el estudiante debe identificar qué problema
+resuelve, qué parámetros controlan el método y cómo interpretar su
+resultado.</p>
+<p>Si una actividad autoriza inteligencia artificial, el código o
+explicación obtenidos deben revisarse mediante pruebas independientes.
+Entregar una respuesta que no pueda explicarse, modificarse o validar
+impide demostrar aprendizaje.</p>
+<h2 id="bibliografía-de-trabajo">Bibliografía de trabajo</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Recurso</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Uso dentro del curso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Santiago Echeverri Arteaga, <em>Notas de clase: Métodos
+Numéricos</em></td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Secuencia de explicaciones, derivaciones y ejemplos tratados en
+clase</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Alex Gezerlis, <em>Numerical Methods in Physics with Python</em>,
+2.ª ed., CUP, 2023</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Texto técnico principal, proyectos físicos y problemas de
+profundización</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Acta de concertación académica, Métodos Numéricos, 2026-2</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Fechas, porcentajes y condiciones operativas de evaluación</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Documentación oficial de Python, NumPy, SciPy y Matplotlib</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Consulta de interfaces y comportamiento de las bibliotecas</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="recomendaciones-para-estudiar">Recomendaciones para
+estudiar</h2>
+<ol type="1">
+<li>Resuelva primero un caso pequeño a mano.</li>
+<li>Prediga el signo y el orden de magnitud antes de ejecutar.</li>
+<li>Dibuje el algoritmo o escriba sus pasos en lenguaje natural.</li>
+<li>Cambie un parámetro por vez y registre el efecto.</li>
+<li>No confunda que el programa termine con que la respuesta sea
+correcta.</li>
+<li>Compare error, residuo y cambio entre iteraciones: no son la misma
+cantidad.</li>
+<li>Conserve ejemplos que hagan fallar el método; son parte del
+aprendizaje.</li>
+<li>Estudie con preguntas de decisión: “¿qué método usaría y por
+qué?”.</li>
+</ol>
+<hr />
+<p><strong>Documento de referencia institucional:</strong> Acta de
+concertación académica del 2 de septiembre de 2026. <strong>Texto
+técnico:</strong> Alex Gezerlis, <em>Numerical Methods in Physics with
+Python</em>, 2.ª edición, Cambridge University Press, 2023.</p>
+<footer class="course-footer">
+  <strong>Material de referencia:</strong> notas de clase de Métodos Numéricos, acta de concertación 2026-2 y Alex Gezerlis, <em>Numerical Methods in Physics with Python</em>, 2.ª edición (Cambridge University Press, 2023). Consulte los PDF adjuntos en Moodle.
+</footer>
+</body>
+</html>

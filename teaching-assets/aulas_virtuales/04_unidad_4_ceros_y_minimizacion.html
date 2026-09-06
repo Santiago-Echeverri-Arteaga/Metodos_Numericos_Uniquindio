@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Unidad 4. Ceros de funciones y minimización</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>
+    :root {
+      --mn-verde: #176b4d;
+      --mn-verde-oscuro: #0f4f39;
+      --mn-verde-claro: #e8f5ef;
+      --mn-azul: #22577a;
+      --mn-borde: #718096;
+      --mn-fondo: #f7faf9;
+      --mn-texto: #1f2937;
+      --mn-blanco: #ffffff;
+      --mn-alerta: #fff7df;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 1.5rem 2.2rem 4rem;
+      color: var(--mn-texto);
+      background: var(--mn-blanco);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.62;
+    }
+
+    h1, h2, h3, h4 { line-height: 1.25; }
+
+    h1 {
+      margin: .5rem 0 1.5rem;
+      padding-bottom: .7rem;
+      color: var(--mn-verde-oscuro);
+      border-bottom: 4px solid var(--mn-verde);
+      font-size: 2rem;
+    }
+
+    h2 {
+      margin-top: 2.25rem;
+      padding: .48rem .75rem;
+      color: var(--mn-verde-oscuro);
+      background: var(--mn-verde-claro);
+      border-left: 5px solid var(--mn-verde);
+      font-size: 1.45rem;
+    }
+
+    h3 { margin-top: 1.7rem; color: var(--mn-azul); font-size: 1.2rem; }
+    h4 { color: #315f72; }
+
+    p, li { max-width: 96ch; }
+    li + li { margin-top: .25rem; }
+
+    a { color: #145f8c; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    a:hover { color: #0b405f; }
+
+    blockquote,
+    .nota {
+      margin: 1.25rem 0;
+      padding: .9rem 1.1rem;
+      color: #234437;
+      background: #f0f8f4;
+      border-left: 5px solid var(--mn-verde);
+      border-radius: 0 6px 6px 0;
+    }
+
+    .advertencia {
+      margin: 1.25rem 0;
+      padding: .9rem 1.1rem;
+      background: var(--mn-alerta);
+      border-left: 5px solid #c88719;
+      border-radius: 0 6px 6px 0;
+    }
+
+    code {
+      padding: .1rem .28rem;
+      border-radius: 4px;
+      color: #8b1e3f;
+      background: #eef1f4;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: .92em;
+    }
+
+    pre {
+      overflow-x: auto;
+      padding: 1rem 1.1rem;
+      border: 1px solid #cbd5df;
+      border-radius: 7px;
+      background: #f6f8fa;
+      line-height: 1.45;
+    }
+
+    pre code { padding: 0; color: #1f2937; background: transparent; }
+
+    .table-responsive {
+      width: 100%;
+      margin: 1.2rem 0 1.6rem;
+      overflow-x: auto;
+      border-radius: 7px;
+      box-shadow: 0 1px 4px rgba(23, 78, 57, .15);
+    }
+
+    table.course-table {
+      width: 100%;
+      min-width: 640px;
+      margin: 0;
+      border: 1px solid var(--mn-borde);
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    table.course-table th,
+    table.course-table td {
+      padding: .62rem .72rem;
+      border: 1px solid var(--mn-borde) !important;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table.course-table thead th {
+      color: #fff;
+      background: var(--mn-verde-oscuro);
+      font-weight: 700;
+    }
+
+    table.course-table tbody tr:nth-child(even) td { background: #f3f8f5; }
+    table.course-table tbody tr:hover td { background: #e5f2eb; }
+
+    .formula {
+      display: block;
+      max-width: 100%;
+      margin: .8rem 0;
+      padding: .7rem .9rem;
+      overflow-x: auto;
+      border: 1px solid #c8d5cf;
+      border-radius: 5px;
+      background: var(--mn-fondo);
+      color: #173f31;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      white-space: nowrap;
+    }
+
+    .course-footer {
+      margin-top: 3rem;
+      padding: 1rem 1.2rem;
+      color: #26483a;
+      background: var(--mn-verde-claro);
+      border-top: 3px solid var(--mn-verde);
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 1rem 1rem 3rem; font-size: 15px; }
+      h1 { font-size: 1.65rem; }
+      h2 { font-size: 1.3rem; }
+    }
+
+    @media print {
+      body { max-width: none; padding: 0; font-size: 10.5pt; }
+      h2 { break-after: avoid; }
+      pre, blockquote, table { break-inside: avoid; }
+      .table-responsive { overflow: visible; box-shadow: none; }
+      table.course-table { min-width: 0; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+<!-- Sin barra de navegación: este archivo se utiliza como recurso independiente en Moodle. -->
+<h1 id="unidad-4-ceros-de-funciones-y-minimización">Unidad 4. Ceros de
+funciones y minimización</h1>
+<h2 id="sentido-de-la-unidad">Sentido de la unidad</h2>
+<p>Encontrar una raíz significa resolver <code>f(x)=0</code>. Muchos
+problemas físicos adoptan esta forma después de imponer una condición de
+equilibrio, una ecuación de estado, una restricción geométrica o una
+relación trascendente. La minimización busca el punto donde una
+cantidad, como energía o acción discretizada, alcanza un extremo.</p>
+<p>Los métodos se diferencian por la información que necesitan, la
+rapidez de convergencia y sus garantías. La mejor opción no es siempre
+la que converge en menos iteraciones: también importan el costo de
+evaluar la función, la disponibilidad de derivadas y la robustez frente
+a una aproximación inicial imperfecta.</p>
+<blockquote>
+<p><strong>Lectura orientadora:</strong> notas de clase, apartados de
+ceros, convergencia, métodos con y sin intervalo, sistemas no lineales y
+minimización; Gezerlis, capítulo 5.</p>
+</blockquote>
+<h2 id="resultados-de-aprendizaje">Resultados de aprendizaje</h2>
+<p>Al terminar la unidad, el estudiante podrá:</p>
+<ul>
+<li>formular problemas físicos como ecuaciones no lineales;</li>
+<li>distinguir métodos con intervalo y métodos abiertos;</li>
+<li>implementar bisección, punto fijo, Newton y secante;</li>
+<li>comparar velocidad, costo y robustez mediante evidencia;</li>
+<li>establecer criterios de parada basados en residuo e intervalo;</li>
+<li>reconocer raíces múltiples y fallos de convergencia;</li>
+<li>extender Newton a sistemas y explicar la idea de métodos
+cuasi-Newton;</li>
+<li>localizar mínimos unidimensionales mediante sección áurea.</li>
+</ul>
+<h2 id="secuencia-sugerida-de-clases">Secuencia sugerida de clases</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Clase</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pregunta central</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Métodos</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">1</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo garantizar que existe una raíz en un intervalo?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cambio de signo y bisección</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cota de error</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">2</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Qué significa convergencia de una iteración?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Punto fijo y orden</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cocientes de errores</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">3</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo acelerar usando información local?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Newton y secante</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comparación costo-convergencia</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">4</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Qué ocurre con varias incógnitas?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Newton para sistemas y Broyden</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Norma del residuo</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">5</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo buscar un mínimo sin derivadas?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Acotamiento y sección áurea</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Reducción del intervalo</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">6</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo aparece la optimización en física?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Equilibrio, energía y acción</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Modelo discretizado</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="1-formulación-y-exploración-inicial">1. Formulación y
+exploración inicial</h2>
+<p>Antes de iterar:</p>
+<ol type="1">
+<li>defina la función y su dominio;</li>
+<li>identifique discontinuidades y singularidades;</li>
+<li>estime escalas y unidades;</li>
+<li>grafique o muestree la función cuando sea posible;</li>
+<li>determine si se busca una raíz, todas las raíces o una raíz en una
+región específica.</li>
+</ol>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pregunta</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Riesgo que evita</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿La función está definida en el intervalo?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Confundir una singularidad con una raíz</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Hay cambio de signo?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aplicar bisección sin garantía</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿La raíz puede ser tangente?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">No detectar raíces de multiplicidad par</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cuánto cuesta evaluar <code>f</code>?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Elegir un método con demasiadas evaluaciones</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Se dispone de <code>f′</code> confiable?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Usar Newton con una derivada ruidosa o costosa</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="2-bisección">2. Bisección</h2>
+<p>Si <code>f</code> es continua y <code>f(a)f(b)&lt;0</code>, existe al
+menos una raíz en <code>[a,b]</code>. La bisección evalúa el punto medio
+y conserva la mitad que mantiene el cambio de signo.</p>
+<p><span class="formula">c = (a+b)/2</span></p>
+<p>Después de <code>n</code> bisecciones, el ancho del intervalo es
+<code>(b-a)/2ⁿ</code>. Esto proporciona una cota explícita sobre la
+localización de la raíz.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> biseccion(f, a, b, tol<span class="op">=</span><span class="fl">1e-10</span>, max_iter<span class="op">=</span><span class="dv">100</span>):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    fa <span class="op">=</span> f(a)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    fb <span class="op">=</span> f(b)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> fa <span class="op">*</span> fb <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">&quot;El intervalo no encierra un cambio de signo&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    historial <span class="op">=</span> []</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(max_iter):</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        c <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> (a <span class="op">+</span> b)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        fc <span class="op">=</span> f(c)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        historial.append((a, b, c, fc))</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">abs</span>(fc) <span class="op">&lt;=</span> tol <span class="kw">or</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="bu">abs</span>(b <span class="op">-</span> a) <span class="op">&lt;=</span> tol:</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> c, historial</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> fa <span class="op">*</span> fc <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>            b, fb <span class="op">=</span> c, fc</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>            a, fa <span class="op">=</span> c, fc</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">RuntimeError</span>(<span class="st">&quot;No se alcanzó la tolerancia&quot;</span>)</span></code></pre></div>
+<h3 id="ventajas-y-limitaciones">Ventajas y limitaciones</h3>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ventaja</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Limitación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Convergencia garantizada bajo sus hipótesis</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Convergencia lineal</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cota geométrica del error</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Requiere un intervalo con cambio de signo</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">No usa derivadas</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Puede omitir raíces sin cambio de signo</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-iteración-de-punto-fijo">3. Iteración de punto fijo</h2>
+<p>Una ecuación <code>f(x)=0</code> puede reescribirse como
+<code>x=g(x)</code>. La iteración es:</p>
+<p><span class="formula">xₖ₊₁ = g(xₖ)</span></p>
+<p>La reformulación es decisiva. Expresiones equivalentes pueden generar
+iteraciones convergentes o divergentes. Cerca de un punto fijo, la
+condición <code>|g′(x*)|&lt;1</code> favorece convergencia local.</p>
+<h3 id="experimento">Experimento</h3>
+<p>Reescriba una misma ecuación de dos maneras y compare las secuencias.
+Grafique <code>y=g(x)</code> junto con <code>y=x</code> y relacione la
+pendiente con el comportamiento observado.</p>
+<h2 id="4-método-de-newton-raphson">4. Método de Newton-Raphson</h2>
+<p>Newton reemplaza localmente la función por su recta tangente:</p>
+<p><span class="formula">xₖ₊₁ = xₖ - f(xₖ)/f′(xₖ)</span></p>
+<p>Cuando la aproximación inicial es adecuada, la raíz es simple y la
+función es suficientemente suave, la convergencia puede ser cuadrática.
+Esto significa que el número de cifras correctas puede crecer
+rápidamente.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Fortaleza</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Riesgo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Convergencia local muy rápida</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Depende de la aproximación inicial</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Usa geometría local</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Falla si la derivada es cero o muy pequeña</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Puede extenderse a sistemas</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cada paso puede ser costoso</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Permite analizar multiplicidad</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Puede converger a una raíz distinta</td>
+</tr>
+</tbody>
+</table></div>
+<p>Para raíces múltiples, Newton pierde su convergencia cuadrática
+usual. Si la multiplicidad <code>m</code> es conocida, puede modificarse
+el paso multiplicando la corrección por <code>m</code>.</p>
+<h2 id="5-método-de-la-secante">5. Método de la secante</h2>
+<p>La secante aproxima la derivada con dos valores recientes:</p>
+<p><span class="formula">xₖ₊₁ = xₖ -
+f(xₖ)(xₖ-xₖ₋₁)/[f(xₖ)-f(xₖ₋₁)]</span></p>
+<p>No necesita una derivada explícita y suele converger más rápido que
+bisección, pero pierde la garantía del intervalo. Debe detectar
+denominadores pequeños y conservar un máximo de iteraciones.</p>
+<h2 id="6-método-de-ridder-y-estrategias-híbridas">6. Método de Ridder y
+estrategias híbridas</h2>
+<p>Los métodos híbridos intentan combinar la seguridad de un intervalo
+con una actualización más rápida. Ridder construye una transformación
+que permite una interpolación más efectiva dentro de un intervalo con
+cambio de signo.</p>
+<p>En práctica científica, una estrategia común es:</p>
+<ol type="1">
+<li>explorar y encerrar la raíz;</li>
+<li>reducir el intervalo con un método robusto;</li>
+<li>acelerar con Newton o secante cuando la aproximación sea
+segura;</li>
+<li>volver al método de intervalo si el paso sale de la región
+confiable.</li>
+</ol>
+<h2 id="7-criterios-de-parada">7. Criterios de parada</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Criterio</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Expresión</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Qué controla</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cambio absoluto</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">`</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">xₖ₊₁-xₖ</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cambio relativo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">`</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Δx</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Residuo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">`</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">f(xₖ)</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Intervalo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">`</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">b-a</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Límite</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><code>k ≥ max_iter</code></td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evita iteración indefinida</td>
+</tr>
+</tbody>
+</table></div>
+<p>Conviene combinar criterios. Un cambio pequeño puede deberse a
+estancamiento, y un residuo pequeño puede ser engañoso si la función
+está mal escalada.</p>
+<h2 id="8-sistemas-no-lineales">8. Sistemas no lineales</h2>
+<p>Para <code>F(x)=0</code>, Newton resuelve en cada iteración:</p>
+<p><span class="formula">J(xₖ) Δx = -F(xₖ), luego xₖ₊₁ = xₖ +
+Δx</span></p>
+<p><code>J</code> es la matriz jacobiana. Se resuelve un sistema lineal;
+no se calcula explícitamente <code>J⁻¹</code>. El costo de construir el
+jacobiano puede ser alto. Métodos como Broyden actualizan una
+aproximación a la matriz o a su inversa utilizando información de
+iteraciones previas.</p>
+<h3 id="diagnósticos-mínimos">Diagnósticos mínimos</h3>
+<ul>
+<li>norma de <code>F(xₖ)</code>;</li>
+<li>norma del paso <code>Δx</code>;</li>
+<li>condición aproximada del jacobiano;</li>
+<li>número de evaluaciones de la función;</li>
+<li>sensibilidad a la aproximación inicial.</li>
+</ul>
+<h2 id="9-minimización-unidimensional">9. Minimización
+unidimensional</h2>
+<p>Si solo se puede evaluar una función y se conoce un intervalo donde
+hay un mínimo unimodal, la búsqueda por sección áurea reduce el
+intervalo reutilizando una evaluación.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Método</th>
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Requiere derivada</th>
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Requiere intervalo</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comentario</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Sección áurea</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">No</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Sí</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Robusto para función unimodal</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Newton para mínimos</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Primera y segunda</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">No necesariamente</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Rápido cerca del mínimo, sensible a curvatura</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Descenso por gradiente</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Primera</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">No</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Extensible a varias dimensiones</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cuasi-Newton</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Gradiente o diferencias</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">No</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aproxima curvatura</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="10-aplicaciones-físicas">10. Aplicaciones físicas</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Problema</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Formulación numérica</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Volumen en una ecuación de estado</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Raíz de una ecuación no lineal</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Punto de equilibrio</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cero de la fuerza o mínimo de energía</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ángulo de lanzamiento para alcanzar un blanco</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Raíz del error de posición</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Parámetro de un modelo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Mínimo de una función de costo</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Trayectoria clásica</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Extremo de una acción discretizada</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="errores-frecuentes">Errores frecuentes</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Consecuencia</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Prevención</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">No revisar continuidad</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">“Raíz” cerca de una singularidad</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Explorar dominio y graficar</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Usar Newton con derivada pequeña</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Paso enorme</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Limitar, amortiguar o cambiar de método</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Detener solo por <code>Δx</code></td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Falso estancamiento</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Revisar también residuo</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Redondear dentro de la iteración</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pérdida artificial de convergencia</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Redondear solo al comunicar</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Confundir mínimo local con global</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Conclusión física incorrecta</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Explorar varios intervalos/inicios</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Contar iteraciones pero no evaluaciones</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comparación de costo incompleta</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Registrar llamadas a <code>f</code> y <code>f′</code></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="taller-propuesto">Taller propuesto</h2>
+<ol type="1">
+<li>Calcule cuántas iteraciones de bisección garantizan una tolerancia
+dada.</li>
+<li>Implemente bisección con historial y pruebe un caso sin cambio de
+signo.</li>
+<li>Construya dos iteraciones de punto fijo para la misma ecuación y
+compare.</li>
+<li>Implemente Newton con residuo, tolerancias y máximo de
+iteraciones.</li>
+<li>Estudie Newton cerca de una raíz doble.</li>
+<li>Compare bisección, Newton y secante usando número de
+evaluaciones.</li>
+<li>Diseñe un método híbrido que mantenga un intervalo válido.</li>
+<li>Resuelva un sistema no lineal de dos ecuaciones y grafique sus
+curvas de nivel.</li>
+<li>Implemente sección áurea y verifique la reducción del
+intervalo.</li>
+<li>Formule una condición física de equilibrio como raíz y como mínimo;
+compare ambas rutas.</li>
+</ol>
+<h2 id="producto-integrador-de-la-unidad">Producto integrador de la
+unidad</h2>
+<p>Seleccione un problema físico no lineal y resuélvalo mediante un
+método con intervalo y uno abierto. Entregue formulación, dominio,
+gráfica exploratoria, historial, criterios de parada, costo en
+evaluaciones, comparación final y discusión de los fallos posibles.</p>
+<h2 id="lista-de-comprobación">Lista de comprobación</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Definí dominio, unidades y región de
+búsqueda.</label></li>
+<li><label><input type="checkbox" />Verifiqué las hipótesis del
+método.</label></li>
+<li><label><input type="checkbox" />Registré residuo, cambio e
+iteraciones.</label></li>
+<li><label><input type="checkbox" />Incluí un máximo de
+iteraciones.</label></li>
+<li><label><input type="checkbox" />Comparé costo mediante evaluaciones,
+no solo iteraciones.</label></li>
+<li><label><input type="checkbox" />Probé aproximaciones iniciales
+alternativas.</label></li>
+<li><label><input type="checkbox" />Interpreté qué representa
+físicamente la raíz o el mínimo.</label></li>
+</ul>
+<h2 id="fuentes-para-esta-unidad">Fuentes para esta unidad</h2>
+<ul>
+<li>Santiago Echeverri Arteaga, <em>Notas de clase: Métodos
+Numéricos</em>, apartados de ceros, convergencia, sistemas no lineales y
+minimización.</li>
+<li>Alex Gezerlis, <em>Numerical Methods in Physics with Python</em>,
+2.ª edición, capítulo 5.</li>
+</ul>
+<footer class="course-footer">
+  <strong>Material de referencia:</strong> notas de clase de Métodos Numéricos, acta de concertación 2026-2 y Alex Gezerlis, <em>Numerical Methods in Physics with Python</em>, 2.ª edición (Cambridge University Press, 2023). Consulte los PDF adjuntos en Moodle.
+</footer>
+</body>
+</html>

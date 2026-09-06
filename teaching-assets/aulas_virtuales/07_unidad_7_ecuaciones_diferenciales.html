@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Unidad 7. Ecuaciones diferenciales numéricas</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>
+    :root {
+      --mn-verde: #176b4d;
+      --mn-verde-oscuro: #0f4f39;
+      --mn-verde-claro: #e8f5ef;
+      --mn-azul: #22577a;
+      --mn-borde: #718096;
+      --mn-fondo: #f7faf9;
+      --mn-texto: #1f2937;
+      --mn-blanco: #ffffff;
+      --mn-alerta: #fff7df;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 1.5rem 2.2rem 4rem;
+      color: var(--mn-texto);
+      background: var(--mn-blanco);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.62;
+    }
+
+    h1, h2, h3, h4 { line-height: 1.25; }
+
+    h1 {
+      margin: .5rem 0 1.5rem;
+      padding-bottom: .7rem;
+      color: var(--mn-verde-oscuro);
+      border-bottom: 4px solid var(--mn-verde);
+      font-size: 2rem;
+    }
+
+    h2 {
+      margin-top: 2.25rem;
+      padding: .48rem .75rem;
+      color: var(--mn-verde-oscuro);
+      background: var(--mn-verde-claro);
+      border-left: 5px solid var(--mn-verde);
+      font-size: 1.45rem;
+    }
+
+    h3 { margin-top: 1.7rem; color: var(--mn-azul); font-size: 1.2rem; }
+    h4 { color: #315f72; }
+
+    p, li { max-width: 96ch; }
+    li + li { margin-top: .25rem; }
+
+    a { color: #145f8c; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    a:hover { color: #0b405f; }
+
+    blockquote,
+    .nota {
+      margin: 1.25rem 0;
+      padding: .9rem 1.1rem;
+      color: #234437;
+      background: #f0f8f4;
+      border-left: 5px solid var(--mn-verde);
+      border-radius: 0 6px 6px 0;
+    }
+
+    .advertencia {
+      margin: 1.25rem 0;
+      padding: .9rem 1.1rem;
+      background: var(--mn-alerta);
+      border-left: 5px solid #c88719;
+      border-radius: 0 6px 6px 0;
+    }
+
+    code {
+      padding: .1rem .28rem;
+      border-radius: 4px;
+      color: #8b1e3f;
+      background: #eef1f4;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: .92em;
+    }
+
+    pre {
+      overflow-x: auto;
+      padding: 1rem 1.1rem;
+      border: 1px solid #cbd5df;
+      border-radius: 7px;
+      background: #f6f8fa;
+      line-height: 1.45;
+    }
+
+    pre code { padding: 0; color: #1f2937; background: transparent; }
+
+    .table-responsive {
+      width: 100%;
+      margin: 1.2rem 0 1.6rem;
+      overflow-x: auto;
+      border-radius: 7px;
+      box-shadow: 0 1px 4px rgba(23, 78, 57, .15);
+    }
+
+    table.course-table {
+      width: 100%;
+      min-width: 640px;
+      margin: 0;
+      border: 1px solid var(--mn-borde);
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    table.course-table th,
+    table.course-table td {
+      padding: .62rem .72rem;
+      border: 1px solid var(--mn-borde) !important;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table.course-table thead th {
+      color: #fff;
+      background: var(--mn-verde-oscuro);
+      font-weight: 700;
+    }
+
+    table.course-table tbody tr:nth-child(even) td { background: #f3f8f5; }
+    table.course-table tbody tr:hover td { background: #e5f2eb; }
+
+    .formula {
+      display: block;
+      max-width: 100%;
+      margin: .8rem 0;
+      padding: .7rem .9rem;
+      overflow-x: auto;
+      border: 1px solid #c8d5cf;
+      border-radius: 5px;
+      background: var(--mn-fondo);
+      color: #173f31;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      white-space: nowrap;
+    }
+
+    .course-footer {
+      margin-top: 3rem;
+      padding: 1rem 1.2rem;
+      color: #26483a;
+      background: var(--mn-verde-claro);
+      border-top: 3px solid var(--mn-verde);
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 1rem 1rem 3rem; font-size: 15px; }
+      h1 { font-size: 1.65rem; }
+      h2 { font-size: 1.3rem; }
+    }
+
+    @media print {
+      body { max-width: none; padding: 0; font-size: 10.5pt; }
+      h2 { break-after: avoid; }
+      pre, blockquote, table { break-inside: avoid; }
+      .table-responsive { overflow: visible; box-shadow: none; }
+      table.course-table { min-width: 0; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+<!-- Sin barra de navegación: este archivo se utiliza como recurso independiente en Moodle. -->
+<h1 id="unidad-7-ecuaciones-diferenciales-numéricas">Unidad 7.
+Ecuaciones diferenciales numéricas</h1>
+<h2 id="sentido-de-la-unidad">Sentido de la unidad</h2>
+<p>Las ecuaciones diferenciales describen evolución, equilibrio,
+transporte y oscilación. Cuando no existe solución analítica o el modelo
+incluye condiciones complejas, la solución se aproxima sobre una malla.
+El resultado depende del paso, del método, de la estabilidad y de la
+forma de imponer condiciones iniciales o de frontera.</p>
+<p>Esta unidad introduce problemas de valores iniciales, sistemas de
+ecuaciones, estabilidad, métodos de Runge-Kutta y una visión general de
+problemas de frontera, valores propios y ecuaciones diferenciales
+parciales.</p>
+<blockquote>
+<p><strong>Lectura orientadora:</strong> notas de clase, apartados
+finales de ecuaciones diferenciales, Euler, error y Runge-Kutta;
+Gezerlis, capítulo 8.</p>
+</blockquote>
+<h2 id="resultados-de-aprendizaje">Resultados de aprendizaje</h2>
+<p>Al finalizar la unidad, el estudiante podrá:</p>
+<ul>
+<li>clasificar problemas de valores iniciales, frontera y valores
+propios;</li>
+<li>transformar ecuaciones de orden superior en sistemas de primer
+orden;</li>
+<li>implementar Euler hacia adelante y métodos Runge-Kutta;</li>
+<li>distinguir error local y global;</li>
+<li>estudiar convergencia mediante refinamiento temporal;</li>
+<li>reconocer restricciones de estabilidad;</li>
+<li>validar soluciones mediante exactitud, residuos e invariantes;</li>
+<li>describir estrategias básicas para problemas de frontera y
+ecuaciones parciales.</li>
+</ul>
+<h2 id="secuencia-sugerida-de-clases">Secuencia sugerida de clases</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Clase</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pregunta central</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Métodos</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">1</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Qué información define una solución?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">IVP, BVP y EVP</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Clasificación de problemas</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">2</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo avanzar desde un estado conocido?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Euler hacia adelante</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Derivación y tabla de pasos</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">3</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo mejorar precisión y estabilidad?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Heun, punto medio y RK4</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comparación de órdenes</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">4</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo resolver ecuaciones de orden superior?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Sistemas simultáneos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Oscilador armónico</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">5</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Qué significa estabilidad?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ecuación de prueba y paso crítico</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Mapa de comportamiento</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">6</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo tratar condiciones en dos extremos?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Disparo y diferencias finitas</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Residuo de frontera</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">7</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo extenderse al espacio?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Mallas y PDE</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Esquema conceptual</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="1-clasificación-de-problemas">1. Clasificación de problemas</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Tipo</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Información dada</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Valor inicial (IVP)</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estado completo en un punto inicial</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Posición y velocidad inicial de una partícula</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Frontera (BVP)</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Condiciones en puntos distintos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Temperatura fijada en dos extremos</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Valor propio (EVP)</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Condiciones admitidas solo para ciertos parámetros</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estados estacionarios de Schrödinger</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ecuación parcial (PDE)</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Dependencia de varias variables independientes</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Difusión, ondas o Poisson</td>
+</tr>
+</tbody>
+</table></div>
+<p>No todos los métodos sirven para todos los tipos. Euler y Runge-Kutta
+son naturalmente métodos de avance para valores iniciales.</p>
+<h2 id="2-problema-de-valores-iniciales">2. Problema de valores
+iniciales</h2>
+<p>Considere:</p>
+<p><span class="formula">y′(t) = f(t,y), con y(t₀)=y₀</span></p>
+<p>Un método produce aproximaciones <code>yₙ≈y(tₙ)</code> en una malla
+<code>tₙ=t₀+nh</code>.</p>
+<p>Antes de programar deben definirse:</p>
+<ul>
+<li>intervalo de integración;</li>
+<li>estado inicial;</li>
+<li>paso o tolerancia;</li>
+<li>método;</li>
+<li>cantidades diagnósticas;</li>
+<li>criterio de fallo.</li>
+</ul>
+<h2 id="3-euler-hacia-adelante">3. Euler hacia adelante</h2>
+<p>Euler reemplaza la solución local por su tangente:</p>
+<p><span class="formula">yₙ₊₁ = yₙ + h f(tₙ,yₙ)</span></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> euler(f, t0, y0, h, n):</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    t <span class="op">=</span> np.empty(n <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> np.empty(n <span class="op">+</span> <span class="dv">1</span>, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    t[<span class="dv">0</span>], y[<span class="dv">0</span>] <span class="op">=</span> t0, y0</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(n):</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        t[k <span class="op">+</span> <span class="dv">1</span>] <span class="op">=</span> t[k] <span class="op">+</span> h</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        y[k <span class="op">+</span> <span class="dv">1</span>] <span class="op">=</span> y[k] <span class="op">+</span> h <span class="op">*</span> f(t[k], y[k])</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> t, y</span></code></pre></div>
+<p>Euler tiene error local de orden <code>h²</code> y error global de
+orden <code>h</code>. La diferencia importa: se realizan aproximadamente
+<code>1/h</code> pasos y los errores locales se acumulan.</p>
+<h2 id="4-métodos-runge-kutta">4. Métodos Runge-Kutta</h2>
+<p>Los métodos Runge-Kutta combinan varias pendientes dentro de un paso
+para alcanzar mayor orden sin calcular derivadas analíticas de
+<code>f</code>.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Método</th>
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evaluaciones por paso</th>
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Orden global típico</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Euler</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">1</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">1</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Punto medio / RK2</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">2</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">2</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Heun</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">2</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">2</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">RK4 clásico</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">4</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">4</td>
+</tr>
+</tbody>
+</table></div>
+<p>Para RK4:</p>
+<p><span class="formula">k₁=f(tₙ,yₙ), k₂=f(tₙ+h/2,yₙ+hk₁/2),
+k₃=f(tₙ+h/2,yₙ+hk₂/2), k₄=f(tₙ+h,yₙ+hk₃)</span></p>
+<p><span class="formula">yₙ₊₁ = yₙ + h(k₁+2k₂+2k₃+k₄)/6</span></p>
+<p>Un orden mayor no elimina restricciones de estabilidad ni garantiza
+mejor resultado si el modelo es rígido.</p>
+<h2 id="5-ecuaciones-de-orden-superior-como-sistemas">5. Ecuaciones de
+orden superior como sistemas</h2>
+<p>Para <code>x″=g(t,x,x′)</code>, defina <code>v=x′</code>:</p>
+<p><span class="formula">x′=v, v′=g(t,x,v)</span></p>
+<p>El estado es el vector <code>[x,v]</code>. Esta forma permite aplicar
+el mismo integrador a múltiples ecuaciones simultáneas.</p>
+<h3 id="ejemplo-oscilador-armónico">Ejemplo: oscilador armónico</h3>
+<p><span class="formula">x′=v, v′=-ω²x</span></p>
+<p>La energía <code>E=(v²+ω²x²)/2</code> es constante en la solución
+exacta. Su deriva numérica constituye un diagnóstico más informativo que
+una gráfica visualmente sinusoidal.</p>
+<h2 id="6-convergencia-temporal">6. Convergencia temporal</h2>
+<p>Si no se conoce la solución exacta, compare soluciones con
+<code>h</code>, <code>h/2</code> y <code>h/4</code> en tiempos comunes.
+Para un método de orden <code>p</code>, la diferencia debería disminuir
+aproximadamente por <code>2ᵖ</code> en el régimen asintótico.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evidencia</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Qué permite concluir</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error frente a solución exacta</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Convergencia directa</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Diferencia entre refinamientos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estimación sin exacta</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Invariante físico</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Calidad cualitativa a largo plazo</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Residuo discreto</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cumplimiento del esquema</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comparación entre métodos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Detección de errores de implementación</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-estabilidad">7. Estabilidad</h2>
+<p>Para la ecuación de prueba <code>y′=λy</code>, Euler produce:</p>
+<p><span class="formula">yₙ₊₁ = (1+hλ)yₙ</span></p>
+<p>Si la solución física decae, el factor numérico también debe
+permanecer dentro de una región estable. Un paso demasiado grande puede
+generar oscilaciones o crecimiento artificial.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Síntoma</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Posible causa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">La solución crece cuando debería decaer</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Inestabilidad del método o paso excesivo</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Oscilaciones no físicas</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Región de estabilidad inadecuada</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Se requiere un paso diminuto por una escala rápida</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Rigidez</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">RK4 falla aunque su orden es alto</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">El paso está fuera de su región de estabilidad</td>
+</tr>
+</tbody>
+</table></div>
+<p>Para problemas rígidos pueden ser necesarios métodos implícitos o
+integradores especializados.</p>
+<h2 id="8-paso-adaptativo">8. Paso adaptativo</h2>
+<p>Un integrador adaptativo compara dos aproximaciones de diferente
+orden o dos resoluciones del mismo paso para estimar el error local.
+Luego acepta, rechaza y ajusta <code>h</code>.</p>
+<p>Un controlador debe considerar:</p>
+<ul>
+<li>tolerancias absoluta y relativa;</li>
+<li>escalas diferentes entre componentes;</li>
+<li>límites mínimo y máximo de paso;</li>
+<li>número de pasos rechazados;</li>
+<li>eventos o discontinuidades;</li>
+<li>prevención de ciclos infinitos.</li>
+</ul>
+<h2 id="9-problemas-de-frontera">9. Problemas de frontera</h2>
+<p>En un BVP las condiciones se especifican en puntos distintos. Dos
+estrategias introductorias son:</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estrategia</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Idea</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Diagnóstico</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Disparo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Convertir una condición desconocida inicial en un parámetro y
+ajustar la condición final</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Residuo en la frontera</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Diferencias finitas</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Discretizar la ecuación en toda la malla y resolver un sistema</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Residuo interior y condiciones</td>
+</tr>
+</tbody>
+</table></div>
+<p>El disparo puede ser sensible cuando pequeñas variaciones iniciales
+crecen mucho. La formulación matricial puede ser más robusta, pero
+produce sistemas grandes.</p>
+<h2 id="10-valores-propios-y-ecuaciones-parciales">10. Valores propios y
+ecuaciones parciales</h2>
+<p>Algunas condiciones de frontera solo admiten soluciones no triviales
+para ciertos valores de un parámetro. Tras discretizar, el problema
+suele convertirse en uno matricial:</p>
+<p><span class="formula">A u = λ u</span></p>
+<p>En ecuaciones parciales se discretizan espacio, tiempo o ambos. Deben
+revisarse consistencia, estabilidad y convergencia, además de
+condiciones iniciales y de frontera.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">PDE</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estructura típica</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Riesgo numérico</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Difusión</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evolución disipativa</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Restricción de paso en esquema explícito</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ondas</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Propagación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Relación entre paso temporal y espacial</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Poisson</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Problema elíptico</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Sistema lineal grande</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Schrödinger</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evolución compleja o EVP</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Conservación de norma y fase</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="11-aplicación-física-ecuación-de-poisson-en-dos-dimensiones">11.
+Aplicación física: ecuación de Poisson en dos dimensiones</h2>
+<p>La ecuación de Poisson relaciona una fuente con un campo potencial.
+En una malla rectangular, el laplaciano se aproxima mediante diferencias
+finitas y el problema interior se transforma en un sistema lineal
+grande.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Etapa</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pregunta de control</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Dominio</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cuál es la geometría y dónde se ubican las fuentes?</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Frontera</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Se prescribe el potencial, su derivada o una combinación?</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Malla</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo se relacionan <code>Δx</code> y <code>Δy</code> con las
+escalas físicas?</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Operador</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿La plantilla discreta reproduce funciones de prueba?</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Solución</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Conviene método directo, iterativo o disperso?</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Verificación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Disminuye el residuo y converge al refinar la malla?</td>
+</tr>
+</tbody>
+</table></div>
+<p>Una visualización del potencial debe acompañarse de cortes, unidades,
+escala de color y alguna comprobación cuantitativa. Una superficie suave
+no demuestra que se hayan impuesto correctamente las condiciones de
+frontera.</p>
+<h2 id="errores-frecuentes">Errores frecuentes</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Consecuencia</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Corrección</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Confundir error local y global</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Orden informado incorrectamente</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Analizar acumulación de pasos</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comparar soluciones en tiempos distintos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Diferencia sin sentido</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Interpolar o usar mallas anidadas</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Elegir paso solo por apariencia</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Falsa confianza</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estudio de convergencia</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ignorar estabilidad</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Crecimiento numérico</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Analizar región y escalas</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Resolver una ecuación de segundo orden como escalar</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estado incompleto</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Convertir a sistema de primer orden</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">No comprobar invariantes</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error físico oculto</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Registrar energía, norma u otra cantidad</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="taller-propuesto">Taller propuesto</h2>
+<ol type="1">
+<li>Derive Euler desde Taylor y distinga error local y global.</li>
+<li>Implemente Euler para decaimiento exponencial y mida el orden.</li>
+<li>Compare Euler, punto medio y RK4 por error frente a
+evaluaciones.</li>
+<li>Explore estabilidad de Euler para varios valores de
+<code>hλ</code>.</li>
+<li>Resuelva el oscilador armónico y grafique la deriva de energía.</li>
+<li>Convierta un péndulo no lineal en sistema de primer orden.</li>
+<li>Compare pasos fijos y adaptativos en una solución con escalas
+variables.</li>
+<li>Resuelva un BVP sencillo por disparo y mida el residuo final.</li>
+<li>Discretice una segunda derivada y formule un problema de valores
+propios.</li>
+<li>Explique qué evidencia necesitaría para confiar en una simulación
+sin solución exacta.</li>
+</ol>
+<h2 id="producto-integrador-de-la-unidad">Producto integrador de la
+unidad</h2>
+<p>Construya una simulación de un sistema físico descrito por una EDO.
+Compare al menos dos métodos y tres pasos, mida convergencia, registre
+una cantidad física diagnóstica y discuta precisión, estabilidad y
+costo.</p>
+<h2 id="lista-de-comprobación">Lista de comprobación</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Clasifiqué correctamente el tipo de
+problema.</label></li>
+<li><label><input type="checkbox" />Definí estado, intervalo y
+condiciones.</label></li>
+<li><label><input type="checkbox" />Convertí órdenes superiores a un
+sistema coherente.</label></li>
+<li><label><input type="checkbox" />Estudié más de un paso.</label></li>
+<li><label><input type="checkbox" />Diferencié error local y
+global.</label></li>
+<li><label><input type="checkbox" />Revisé estabilidad y posibles
+escalas rápidas.</label></li>
+<li><label><input type="checkbox" />Usé una solución exacta,
+refinamiento o invariante para validar.</label></li>
+</ul>
+<h2 id="fuentes-para-esta-unidad">Fuentes para esta unidad</h2>
+<ul>
+<li>Santiago Echeverri Arteaga, <em>Notas de clase: Métodos
+Numéricos</em>, apartados finales sobre ecuaciones diferenciales, Euler,
+error y Runge-Kutta.</li>
+<li>Alex Gezerlis, <em>Numerical Methods in Physics with Python</em>,
+2.ª edición, capítulo 8.</li>
+</ul>
+<footer class="course-footer">
+  <strong>Material de referencia:</strong> notas de clase de Métodos Numéricos, acta de concertación 2026-2 y Alex Gezerlis, <em>Numerical Methods in Physics with Python</em>, 2.ª edición (Cambridge University Press, 2023). Consulte los PDF adjuntos en Moodle.
+</footer>
+</body>
+</html>

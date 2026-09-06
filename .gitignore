@@ -4,10 +4,24 @@
 
 #Entorno
 .env
+.venv/
+venv/
 
 #Configguration Files
 __pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 settings.json
 .DS_Store
+
+# Notebooks y resultados locales
+.ipynb_checkpoints/
+outputs/
+figures/generated/
+
+# Material reservado al profesor
+instructor-only/
 
 *.zip

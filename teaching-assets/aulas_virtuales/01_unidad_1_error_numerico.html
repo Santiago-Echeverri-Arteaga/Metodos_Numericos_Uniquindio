@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Unidad 1. Error numérico y representación finita</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>
+    :root {
+      --mn-verde: #176b4d;
+      --mn-verde-oscuro: #0f4f39;
+      --mn-verde-claro: #e8f5ef;
+      --mn-azul: #22577a;
+      --mn-borde: #718096;
+      --mn-fondo: #f7faf9;
+      --mn-texto: #1f2937;
+      --mn-blanco: #ffffff;
+      --mn-alerta: #fff7df;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 1.5rem 2.2rem 4rem;
+      color: var(--mn-texto);
+      background: var(--mn-blanco);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.62;
+    }
+
+    h1, h2, h3, h4 { line-height: 1.25; }
+
+    h1 {
+      margin: .5rem 0 1.5rem;
+      padding-bottom: .7rem;
+      color: var(--mn-verde-oscuro);
+      border-bottom: 4px solid var(--mn-verde);
+      font-size: 2rem;
+    }
+
+    h2 {
+      margin-top: 2.25rem;
+      padding: .48rem .75rem;
+      color: var(--mn-verde-oscuro);
+      background: var(--mn-verde-claro);
+      border-left: 5px solid var(--mn-verde);
+      font-size: 1.45rem;
+    }
+
+    h3 { margin-top: 1.7rem; color: var(--mn-azul); font-size: 1.2rem; }
+    h4 { color: #315f72; }
+
+    p, li { max-width: 96ch; }
+    li + li { margin-top: .25rem; }
+
+    a { color: #145f8c; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    a:hover { color: #0b405f; }
+
+    blockquote,
+    .nota {
+      margin: 1.25rem 0;
+      padding: .9rem 1.1rem;
+      color: #234437;
+      background: #f0f8f4;
+      border-left: 5px solid var(--mn-verde);
+      border-radius: 0 6px 6px 0;
+    }
+
+    .advertencia {
+      margin: 1.25rem 0;
+      padding: .9rem 1.1rem;
+      background: var(--mn-alerta);
+      border-left: 5px solid #c88719;
+      border-radius: 0 6px 6px 0;
+    }
+
+    code {
+      padding: .1rem .28rem;
+      border-radius: 4px;
+      color: #8b1e3f;
+      background: #eef1f4;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: .92em;
+    }
+
+    pre {
+      overflow-x: auto;
+      padding: 1rem 1.1rem;
+      border: 1px solid #cbd5df;
+      border-radius: 7px;
+      background: #f6f8fa;
+      line-height: 1.45;
+    }
+
+    pre code { padding: 0; color: #1f2937; background: transparent; }
+
+    .table-responsive {
+      width: 100%;
+      margin: 1.2rem 0 1.6rem;
+      overflow-x: auto;
+      border-radius: 7px;
+      box-shadow: 0 1px 4px rgba(23, 78, 57, .15);
+    }
+
+    table.course-table {
+      width: 100%;
+      min-width: 640px;
+      margin: 0;
+      border: 1px solid var(--mn-borde);
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    table.course-table th,
+    table.course-table td {
+      padding: .62rem .72rem;
+      border: 1px solid var(--mn-borde) !important;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table.course-table thead th {
+      color: #fff;
+      background: var(--mn-verde-oscuro);
+      font-weight: 700;
+    }
+
+    table.course-table tbody tr:nth-child(even) td { background: #f3f8f5; }
+    table.course-table tbody tr:hover td { background: #e5f2eb; }
+
+    .formula {
+      display: block;
+      max-width: 100%;
+      margin: .8rem 0;
+      padding: .7rem .9rem;
+      overflow-x: auto;
+      border: 1px solid #c8d5cf;
+      border-radius: 5px;
+      background: var(--mn-fondo);
+      color: #173f31;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      white-space: nowrap;
+    }
+
+    .course-footer {
+      margin-top: 3rem;
+      padding: 1rem 1.2rem;
+      color: #26483a;
+      background: var(--mn-verde-claro);
+      border-top: 3px solid var(--mn-verde);
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 1rem 1rem 3rem; font-size: 15px; }
+      h1 { font-size: 1.65rem; }
+      h2 { font-size: 1.3rem; }
+    }
+
+    @media print {
+      body { max-width: none; padding: 0; font-size: 10.5pt; }
+      h2 { break-after: avoid; }
+      pre, blockquote, table { break-inside: avoid; }
+      .table-responsive { overflow: visible; box-shadow: none; }
+      table.course-table { min-width: 0; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+<!-- Sin barra de navegación: este archivo se utiliza como recurso independiente en Moodle. -->
+<h1 id="unidad-1-error-numérico-y-representación-finita">Unidad 1. Error
+numérico y representación finita</h1>
+<h2 id="sentido-de-la-unidad">Sentido de la unidad</h2>
+<p>Antes de aplicar cualquier algoritmo es necesario comprender qué
+significa “aproximar”. Un computador trabaja con representaciones
+finitas, los datos físicos tienen incertidumbre y los métodos reemplazan
+operaciones exactas por procedimientos aproximados. El resultado puede
+contener muchos decimales y, aun así, ser poco confiable.</p>
+<p>Esta unidad desarrolla el vocabulario y las herramientas para
+describir el error, anticipar su propagación y reconocer operaciones
+numéricamente peligrosas. Es la base para interpretar todas las unidades
+posteriores.</p>
+<blockquote>
+<p><strong>Lectura orientadora:</strong> notas de clase, sección inicial
+sobre error y propagación; Gezerlis, capítulo 2. Como repaso de Python y
+NumPy puede consultarse el capítulo 1.</p>
+</blockquote>
+<h2 id="resultados-de-aprendizaje">Resultados de aprendizaje</h2>
+<p>Al terminar la unidad, el estudiante podrá:</p>
+<ul>
+<li>distinguir valor exacto, valor aproximado, error y cota de
+error;</li>
+<li>calcular e interpretar errores absoluto y relativo;</li>
+<li>separar incertidumbre de entrada, error de redondeo y error del
+método;</li>
+<li>estimar la propagación de pequeñas perturbaciones;</li>
+<li>explicar overflow, underflow, precisión de máquina y cancelación
+catastrófica;</li>
+<li>diferenciar un problema mal condicionado de un algoritmo
+inestable;</li>
+<li>diseñar experimentos que revelen pérdida de precisión.</li>
+</ul>
+<h2 id="secuencia-sugerida-de-clases">Secuencia sugerida de clases</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Clase</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pregunta central</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Conceptos</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evidencia breve</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">1</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Qué significa que un resultado sea aproximado?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error absoluto, relativo, porcentaje y cotas</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cálculo manual con unidades</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">2</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo afecta la incertidumbre de los datos al resultado?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Propagación univariable y multivariable</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comparación entre estimación lineal y perturbación directa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">3</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo representa números reales un computador?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Punto flotante, rango, precisión, <code>NaN</code>,
+<code>inf</code></td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Experimentos con <code>float</code> y <code>numpy.finfo</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">4</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Por qué expresiones equivalentes producen respuestas
+distintas?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cancelación, orden de operaciones y estabilidad</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Reformulación de una expresión problemática</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">5</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo se audita un cálculo numérico?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Condicionamiento, estabilidad, residuo y validación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Informe corto de diagnóstico</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="1-tipos-de-error">1. Tipos de error</h2>
+<p>Sea <code>x</code> el valor de referencia y <code>x_aprox</code> el
+valor calculado.</p>
+<p><span class="formula">error absoluto = x_aprox - x</span></p>
+<p><span class="formula">error relativo = (x_aprox - x) / x, siempre que
+x ≠ 0</span></p>
+<p>Para comunicar magnitud suele usarse el valor absoluto del error. El
+signo, sin embargo, informa si la aproximación quedó por encima o por
+debajo del valor de referencia.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Concepto</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Qué describe</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Unidad</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Precaución</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error absoluto</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Separación entre aproximación y referencia</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">La misma de la magnitud</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">No permite comparar escalas muy distintas</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error relativo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error comparado con el tamaño del valor</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Adimensional</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">No está definido si la referencia es cero</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error porcentual</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error relativo multiplicado por 100</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Porcentaje</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Un porcentaje pequeño no garantiza relevancia física</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Residuo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Qué tan bien la aproximación satisface la ecuación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Depende del problema</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Un residuo pequeño no siempre implica error pequeño</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cota</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Límite garantizado o estimado para el error</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Depende de la métrica</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Debe aclararse si es teórica o empírica</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="ejemplo-de-escala">Ejemplo de escala</h3>
+<p>Un error absoluto de <code>0,01 m</code> puede ser excelente al medir
+una distancia de <code>100 m</code>, pero inaceptable al medir el
+espesor de una lámina de <code>0,02 m</code>. La interpretación depende
+de la escala, la finalidad y la incertidumbre de los datos.</p>
+<h2 id="2-fuentes-de-error">2. Fuentes de error</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Fuente</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Origen</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ejemplo</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cómo estudiarla</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Medición</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Resolución, calibración, ruido o procedimiento experimental</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Longitud medida con regla milimetrada</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Repeticiones, calibración e incertidumbre</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Modelo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Simplificaciones de la representación física</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ignorar rozamiento</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comparar modelos o estimar términos despreciados</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Truncamiento</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Sustituir un proceso infinito por uno finito</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cortar una serie de Taylor</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Analizar el término omitido y refinar</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Discretización</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Representar un continuo mediante puntos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Malla temporal en una EDO</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Reducir el paso y estudiar convergencia</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Redondeo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Representación finita de los números</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><code>0.1 + 0.2</code> no coincide exactamente con
+<code>0.3</code></td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Examinar escala, precisión y operaciones</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Iteración</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Detener un proceso antes de su límite</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Parar Newton por tolerancia</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Registrar residuo, cambio e iteraciones</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="3-propagación-de-pequeñas-perturbaciones">3. Propagación de
+pequeñas perturbaciones</h2>
+<p>Si <code>y = f(x)</code> y el dato cambia en una cantidad pequeña
+<code>Δx</code>, una aproximación de primer orden es:</p>
+<p><span class="formula">Δy ≈ f′(x) Δx</span></p>
+<p>Para varias variables <code>y = f(x₁, x₂, …, xₙ)</code>:</p>
+<p><span class="formula">Δy ≈ Σ (∂f/∂xᵢ) Δxᵢ</span></p>
+<p>Esta relación no distingue por sí sola entre una cota máxima y una
+incertidumbre estadística. Antes de combinar contribuciones debe
+aclararse qué significa cada <code>Δxᵢ</code> y si existen
+correlaciones.</p>
+<h3 id="actividad-guiada">Actividad guiada</h3>
+<p>Para la energía cinética <code>K = m v² / 2</code>, estime el efecto
+de pequeñas variaciones en <code>m</code> y <code>v</code>. Después
+compare la aproximación lineal con una evaluación directa usando los
+valores perturbados. Determine cuál entrada domina la sensibilidad y
+explique por qué.</p>
+<h2 id="4-punto-flotante">4. Punto flotante</h2>
+<p>Un número de punto flotante se almacena mediante signo, exponente y
+significando. La representación permite cubrir escalas muy grandes, pero
+solo conserva una cantidad finita de dígitos significativos.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Fenómeno</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Descripción</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Síntoma habitual</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Redondeo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">El real más cercano puede no ser representable</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Igualdades decimales inesperadas</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Overflow</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">La magnitud supera el máximo representable</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><code>inf</code> o excepción según la operación</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Underflow</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">La magnitud cae por debajo del rango normal</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Resultado subnormal o cero</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pérdida de absorción</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Una cantidad pequeña se suma a otra mucho mayor</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">La suma no cambia</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cancelación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Se restan números cercanos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pérdida drástica de cifras significativas</td>
+</tr>
+</tbody>
+</table></div>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>info <span class="op">=</span> np.finfo(<span class="bu">float</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;epsilon:&quot;</span>, info.eps)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;mínimo normal:&quot;</span>, info.tiny)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;máximo:&quot;</span>, info.<span class="bu">max</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="fl">0.1</span> <span class="op">+</span> <span class="fl">0.2</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>((<span class="fl">0.1</span> <span class="op">+</span> <span class="fl">0.2</span>) <span class="op">==</span> <span class="fl">0.3</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(math.isclose(<span class="fl">0.1</span> <span class="op">+</span> <span class="fl">0.2</span>, <span class="fl">0.3</span>, rel_tol<span class="op">=</span><span class="fl">1e-12</span>))</span></code></pre></div>
+<h3 id="comparación-adecuada">Comparación adecuada</h3>
+<p>Comparar flotantes solo con <code>==</code> puede ser incorrecto
+cuando los valores provienen de operaciones diferentes. Una prueba
+robusta suele combinar tolerancia relativa y absoluta:</p>
+<p><span class="formula">|a - b| ≤ atol + rtol · max(|a|,
+|b|)</span></p>
+<p>La tolerancia debe proceder del problema, no copiarse sin
+justificación.</p>
+<h2 id="5-cancelación-catastrófica">5. Cancelación catastrófica</h2>
+<p>La cancelación aparece cuando se restan cantidades cercanas. Los
+dígitos comunes desaparecen y el error presente en los últimos dígitos
+pasa a dominar el resultado.</p>
+<h3 id="caso-de-estudio-serie-de-la-exponencial">Caso de estudio: serie
+de la exponencial</h3>
+<p>La serie <code>exp(x) = Σ xⁿ/n!</code> funciona bien para muchos
+valores positivos. Para un valor negativo de gran magnitud, los términos
+alternan, alcanzan magnitudes enormes y luego se cancelan para producir
+un número pequeño. La serie es matemáticamente correcta, pero evaluarla
+de esa manera puede ser numéricamente inestable.</p>
+<p>Una reformulación útil es calcular <code>exp(-a)</code> como
+<code>1/exp(a)</code> cuando <code>a &gt; 0</code>. La nueva expresión
+evita construir una respuesta diminuta mediante la resta de términos
+enormes.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> math <span class="im">import</span> exp</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="op">-</span><span class="fl">20.0</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>estable <span class="op">=</span> <span class="fl">1.0</span> <span class="op">/</span> exp(<span class="op">-</span>x)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>referencia <span class="op">=</span> exp(x)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(estable)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(referencia)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">abs</span>(estable <span class="op">-</span> referencia))</span></code></pre></div>
+<p>La lección no es que toda serie sea mala, sino que una misma
+identidad matemática puede admitir implementaciones con comportamientos
+numéricos muy diferentes.</p>
+<h2 id="6-suma-compensada">6. Suma compensada</h2>
+<p>Cuando se suman muchos términos de escalas diferentes, parte de las
+contribuciones pequeñas puede perderse. La suma compensada conserva una
+variable adicional para recuperar parte del redondeo descartado.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> suma_compensada(valores):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    correccion <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> valor <span class="kw">in</span> valores:</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        ajustado <span class="op">=</span> valor <span class="op">-</span> correccion</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        nuevo <span class="op">=</span> total <span class="op">+</span> ajustado</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        correccion <span class="op">=</span> (nuevo <span class="op">-</span> total) <span class="op">-</span> ajustado</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        total <span class="op">=</span> nuevo</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> total</span></code></pre></div>
+<p>Compare esta función con <code>sum</code> y con
+<code>math.fsum</code> en listas que mezclen números muy grandes y muy
+pequeños. No basta con informar cuál entrega más dígitos: diseñe un caso
+cuya suma exacta pueda conocerse.</p>
+<h2 id="7-condicionamiento-y-estabilidad">7. Condicionamiento y
+estabilidad</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Idea</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pregunta</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Depende principalmente de…</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Condicionamiento</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cuánto cambia la respuesta si cambia un poco la entrada?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">El problema matemático</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estabilidad</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cuánto error adicional introduce el procedimiento?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">El algoritmo y su implementación</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Convergencia</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿La aproximación se acerca a la solución al refinar o iterar?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Método, parámetros y supuestos</td>
+</tr>
+</tbody>
+</table></div>
+<p>Un problema puede estar mal condicionado aunque se use un algoritmo
+excelente. También puede ocurrir lo contrario: un problema bien
+condicionado puede resolverse con una formulación inestable.</p>
+<h2 id="8-aplicación-física-expansión-multipolar">8. Aplicación física:
+expansión multipolar</h2>
+<p>El potencial producido por una distribución localizada puede
+aproximarse mediante una serie de términos multipolares cuando el punto
+de observación se encuentra suficientemente lejos. Este problema conecta
+varias ideas de la unidad:</p>
+<ul>
+<li>reemplazar una expresión exacta por una serie truncada;</li>
+<li>estudiar el parámetro que controla la aproximación;</li>
+<li>comparar error de truncamiento y costo;</li>
+<li>evaluar polinomios de Legendre mediante recurrencias;</li>
+<li>reconocer que una reformulación puede evitar una resta delicada en
+el denominador.</li>
+</ul>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pregunta de análisis</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evidencia esperada</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿En qué región geométrica converge la expansión?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Relación entre distancia de la fuente y del observador</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cuántos términos son necesarios?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error frente al orden de truncamiento</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Qué ocurre cerca de la distribución?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Deterioro o pérdida de convergencia</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo se verifica?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comparación con el potencial calculado directamente</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Qué implementación conviene?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Recurrencia estable para los polinomios</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="tabla-de-diagnóstico">Tabla de diagnóstico</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Síntoma</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Posible causa</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Prueba recomendada</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cambios enormes ante pequeñas perturbaciones</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Mal condicionamiento</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Perturbar sistemáticamente las entradas</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">El error crece al reducir demasiado el paso</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Redondeo y cancelación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Barrido logarítmico del paso</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aparecen <code>inf</code> o <code>NaN</code></td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Overflow, dominio inválido o división por cero</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Verificar rangos y finitud</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Dos expresiones equivalentes difieren</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Inestabilidad algebraica</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Reformular y comparar contra alta precisión</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">La solución parece correcta, pero el residuo es grande</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Criterio de parada inadecuado</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Calcular la ecuación residual</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">El resultado cambia con el orden de la suma</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pérdida de precisión</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ordenar términos o usar suma compensada</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="taller-propuesto">Taller propuesto</h2>
+<ol type="1">
+<li>Calcule error absoluto, relativo y porcentual para tres
+aproximaciones de <code>π</code>. Explique por qué el ordenamiento de
+las aproximaciones no cambia entre error absoluto y relativo en este
+caso.</li>
+<li>Estudie la sensibilidad de <code>T = 2π√(L/g)</code> frente a
+perturbaciones en <code>L</code> y <code>g</code>. Compare propagación
+lineal y cálculo directo.</li>
+<li>Determine experimentalmente cuándo <code>1.0 + h == 1.0</code> para
+valores decrecientes de <code>h</code>.</li>
+<li>Construya un ejemplo de absorción al sumar un número pequeño a uno
+grande.</li>
+<li>Compare dos expresiones algebraicamente equivalentes para las raíces
+de una ecuación cuadrática cuando <code>b²</code> es mucho mayor que
+<code>4ac</code>.</li>
+<li>Implemente la serie de <code>exp(x)</code> y compare su
+comportamiento en <code>x = 20</code> y <code>x = -20</code>. Registre
+el término de mayor magnitud.</li>
+<li>Compare <code>sum</code>, la suma compensada y
+<code>math.fsum</code> con datos de escala mixta.</li>
+<li>Perturbe los coeficientes de un polinomio y observe el cambio en sus
+raíces. Discuta condicionamiento.</li>
+<li>Diseñe una función <code>casi_iguales(a, b, atol, rtol)</code> y
+pruebe casos cercanos a cero y de gran magnitud.</li>
+<li>Explique con un contraejemplo por qué “más decimales impresos” no
+significa “más exactitud”.</li>
+</ol>
+<h2 id="producto-integrador-de-la-unidad">Producto integrador de la
+unidad</h2>
+<p>Elabore un informe breve titulado <strong>Anatomía de un error
+numérico</strong>. Debe incluir:</p>
+<ul>
+<li>una operación o algoritmo que produzca un resultado engañoso;</li>
+<li>una explicación del mecanismo de error;</li>
+<li>una versión reformulada o una estrategia de mitigación;</li>
+<li>una tabla o gráfica de error;</li>
+<li>al menos tres casos de prueba;</li>
+<li>una conclusión que diferencie condicionamiento y estabilidad.</li>
+</ul>
+<h2 id="lista-de-comprobación">Lista de comprobación</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Definí claramente el valor de
+referencia.</label></li>
+<li><label><input type="checkbox" />Distinguí error absoluto, relativo y
+residuo.</label></li>
+<li><label><input type="checkbox" />Conservé unidades donde
+corresponde.</label></li>
+<li><label><input type="checkbox" />Probé diferentes escalas y no solo
+un caso cómodo.</label></li>
+<li><label><input type="checkbox" />Revisé valores <code>NaN</code> e
+infinitos.</label></li>
+<li><label><input type="checkbox" />Expliqué el mecanismo del error, no
+solo su tamaño.</label></li>
+<li><label><input type="checkbox" />Justifiqué cualquier tolerancia
+utilizada.</label></li>
+</ul>
+<h2 id="fuentes-para-esta-unidad">Fuentes para esta unidad</h2>
+<ul>
+<li>Santiago Echeverri Arteaga, <em>Notas de clase: Métodos
+Numéricos</em>, apartados sobre error, propagación, punto flotante,
+compensación y estabilidad.</li>
+<li>Alex Gezerlis, <em>Numerical Methods in Physics with Python</em>,
+2.ª edición, capítulo 2 y apéndice B.</li>
+</ul>
+<footer class="course-footer">
+  <strong>Material de referencia:</strong> notas de clase de Métodos Numéricos, acta de concertación 2026-2 y Alex Gezerlis, <em>Numerical Methods in Physics with Python</em>, 2.ª edición (Cambridge University Press, 2023). Consulte los PDF adjuntos en Moodle.
+</footer>
+</body>
+</html>

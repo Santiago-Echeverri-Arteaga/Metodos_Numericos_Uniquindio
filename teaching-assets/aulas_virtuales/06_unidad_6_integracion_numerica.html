@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Unidad 6. Integración numérica y Monte Carlo</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>
+    :root {
+      --mn-verde: #176b4d;
+      --mn-verde-oscuro: #0f4f39;
+      --mn-verde-claro: #e8f5ef;
+      --mn-azul: #22577a;
+      --mn-borde: #718096;
+      --mn-fondo: #f7faf9;
+      --mn-texto: #1f2937;
+      --mn-blanco: #ffffff;
+      --mn-alerta: #fff7df;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 1.5rem 2.2rem 4rem;
+      color: var(--mn-texto);
+      background: var(--mn-blanco);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.62;
+    }
+
+    h1, h2, h3, h4 { line-height: 1.25; }
+
+    h1 {
+      margin: .5rem 0 1.5rem;
+      padding-bottom: .7rem;
+      color: var(--mn-verde-oscuro);
+      border-bottom: 4px solid var(--mn-verde);
+      font-size: 2rem;
+    }
+
+    h2 {
+      margin-top: 2.25rem;
+      padding: .48rem .75rem;
+      color: var(--mn-verde-oscuro);
+      background: var(--mn-verde-claro);
+      border-left: 5px solid var(--mn-verde);
+      font-size: 1.45rem;
+    }
+
+    h3 { margin-top: 1.7rem; color: var(--mn-azul); font-size: 1.2rem; }
+    h4 { color: #315f72; }
+
+    p, li { max-width: 96ch; }
+    li + li { margin-top: .25rem; }
+
+    a { color: #145f8c; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    a:hover { color: #0b405f; }
+
+    blockquote,
+    .nota {
+      margin: 1.25rem 0;
+      padding: .9rem 1.1rem;
+      color: #234437;
+      background: #f0f8f4;
+      border-left: 5px solid var(--mn-verde);
+      border-radius: 0 6px 6px 0;
+    }
+
+    .advertencia {
+      margin: 1.25rem 0;
+      padding: .9rem 1.1rem;
+      background: var(--mn-alerta);
+      border-left: 5px solid #c88719;
+      border-radius: 0 6px 6px 0;
+    }
+
+    code {
+      padding: .1rem .28rem;
+      border-radius: 4px;
+      color: #8b1e3f;
+      background: #eef1f4;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: .92em;
+    }
+
+    pre {
+      overflow-x: auto;
+      padding: 1rem 1.1rem;
+      border: 1px solid #cbd5df;
+      border-radius: 7px;
+      background: #f6f8fa;
+      line-height: 1.45;
+    }
+
+    pre code { padding: 0; color: #1f2937; background: transparent; }
+
+    .table-responsive {
+      width: 100%;
+      margin: 1.2rem 0 1.6rem;
+      overflow-x: auto;
+      border-radius: 7px;
+      box-shadow: 0 1px 4px rgba(23, 78, 57, .15);
+    }
+
+    table.course-table {
+      width: 100%;
+      min-width: 640px;
+      margin: 0;
+      border: 1px solid var(--mn-borde);
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    table.course-table th,
+    table.course-table td {
+      padding: .62rem .72rem;
+      border: 1px solid var(--mn-borde) !important;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table.course-table thead th {
+      color: #fff;
+      background: var(--mn-verde-oscuro);
+      font-weight: 700;
+    }
+
+    table.course-table tbody tr:nth-child(even) td { background: #f3f8f5; }
+    table.course-table tbody tr:hover td { background: #e5f2eb; }
+
+    .formula {
+      display: block;
+      max-width: 100%;
+      margin: .8rem 0;
+      padding: .7rem .9rem;
+      overflow-x: auto;
+      border: 1px solid #c8d5cf;
+      border-radius: 5px;
+      background: var(--mn-fondo);
+      color: #173f31;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      white-space: nowrap;
+    }
+
+    .course-footer {
+      margin-top: 3rem;
+      padding: 1rem 1.2rem;
+      color: #26483a;
+      background: var(--mn-verde-claro);
+      border-top: 3px solid var(--mn-verde);
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 1rem 1rem 3rem; font-size: 15px; }
+      h1 { font-size: 1.65rem; }
+      h2 { font-size: 1.3rem; }
+    }
+
+    @media print {
+      body { max-width: none; padding: 0; font-size: 10.5pt; }
+      h2 { break-after: avoid; }
+      pre, blockquote, table { break-inside: avoid; }
+      .table-responsive { overflow: visible; box-shadow: none; }
+      table.course-table { min-width: 0; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+<!-- Sin barra de navegación: este archivo se utiliza como recurso independiente en Moodle. -->
+<h1 id="unidad-6-integración-numérica-y-monte-carlo">Unidad 6.
+Integración numérica y Monte Carlo</h1>
+<h2 id="sentido-de-la-unidad">Sentido de la unidad</h2>
+<p>La integración numérica aparece cuando una antiderivada no puede
+expresarse de manera útil, cuando la función es costosa o cuando solo se
+conocen datos discretos. Las reglas de cuadratura sustituyen el área por
+una combinación ponderada de evaluaciones. La calidad depende de la
+suavidad, el tamaño de paso, los nodos y la estructura del
+integrando.</p>
+<p>Esta unidad compara métodos de Newton-Cotes, integración adaptativa,
+extrapolación, cuadratura de Gauss y Monte Carlo.</p>
+<blockquote>
+<p><strong>Lectura orientadora:</strong> notas de clase, apartados de
+integrales, trapecio, Simpson, adaptación, Gauss-Legendre y números
+aleatorios; Gezerlis, capítulo 7.</p>
+</blockquote>
+<h2 id="resultados-de-aprendizaje">Resultados de aprendizaje</h2>
+<p>Al finalizar la unidad, el estudiante podrá:</p>
+<ul>
+<li>derivar reglas de integración a partir de interpolación;</li>
+<li>implementar trapecio y Simpson compuestos;</li>
+<li>relacionar el orden teórico con convergencia observada;</li>
+<li>construir un criterio de refinamiento y adaptación;</li>
+<li>explicar la idea de extrapolación de Romberg;</li>
+<li>usar cuadratura de Gauss-Legendre;</li>
+<li>estimar integrales mediante Monte Carlo y reportar
+incertidumbre;</li>
+<li>elegir un método según dimensión, suavidad y costo de la
+función.</li>
+</ul>
+<h2 id="secuencia-sugerida-de-clases">Secuencia sugerida de clases</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Clase</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pregunta central</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Métodos</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">1</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo convertir el área en una suma?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Rectángulos y trapecio</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Derivación geométrica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">2</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo aumentar el orden?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Simpson y Newton-Cotes</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estudio de convergencia</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">3</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo concentrar esfuerzo donde se necesita?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cuadratura adaptativa</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Partición resultante</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">4</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo eliminar el término principal del error?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Richardson y Romberg</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Tabla triangular</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">5</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo elegir nodos más eficientes?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Gauss-Legendre</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comparación por evaluaciones</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">6</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Qué hacer en alta dimensión?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Monte Carlo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estimación e incertidumbre</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="1-integración-por-interpolación">1. Integración por
+interpolación</h2>
+<p>Muchas reglas se obtienen aproximando <code>f(x)</code> por un
+polinomio local e integrando ese polinomio exactamente.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aproximación local</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Regla resultante</th>
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Orden global típico</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Constante</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Rectángulo</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Depende del punto escogido</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Lineal</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Trapecio</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><code>O(h²)</code></td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cuadrática</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Simpson</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><code>O(h⁴)</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>El orden global supone una función suficientemente suave y una malla
+regular. Discontinuidades, singularidades o cambios rápidos alteran el
+comportamiento.</p>
+<h2 id="2-regla-compuesta-del-trapecio">2. Regla compuesta del
+trapecio</h2>
+<p>Para una partición uniforme con <code>n</code> subintervalos y
+<code>h=(b-a)/n</code>:</p>
+<p><span class="formula">I_T = h [f(a)/2 + Σ f(a+ih) +
+f(b)/2]</span></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> trapecio_compuesto(f, a, b, n):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> n <span class="op">&lt;=</span> <span class="dv">0</span>:</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">&quot;n debe ser positivo&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    h <span class="op">=</span> (b <span class="op">-</span> a) <span class="op">/</span> n</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> (f(a) <span class="op">+</span> f(b))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, n):</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        total <span class="op">+=</span> f(a <span class="op">+</span> i <span class="op">*</span> h)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> h <span class="op">*</span> total</span></code></pre></div>
+<p>Una prueba básica debe incluir funciones constantes y lineales, que
+la regla integra exactamente salvo redondeo.</p>
+<h2 id="3-regla-compuesta-de-simpson">3. Regla compuesta de Simpson</h2>
+<p>Simpson combina tres puntos y requiere un número par de
+subintervalos:</p>
+<p><span class="formula">I_S = h/3
+[f(x₀)+4Σf(x_impar)+2Σf(x_par)+f(xₙ)]</span></p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Método</th>
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Exacto para polinomios hasta grado</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Requisito</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Trapecio</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">1</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><code>n ≥ 1</code></td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Simpson</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">3</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><code>n</code> par</td>
+</tr>
+</tbody>
+</table></div>
+<p>La exactitud polinómica no significa que cualquier función sea
+integrada exactamente. Sirve como prueba y como indicador del orden.</p>
+<h2 id="4-estudio-de-convergencia">4. Estudio de convergencia</h2>
+<p>Con una solución de referencia <code>I</code>, calcule
+<code>E(h)=|I_h-I|</code>. Si <code>E(h)≈C hᵖ</code>, entonces:</p>
+<p><span class="formula">p ≈ log(E(h)/E(h/2)) / log(2)</span></p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cantidad a registrar</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Razón</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Número de subintervalos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Mide refinamiento</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Número de evaluaciones</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Mide costo real</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aproximación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Permite observar estabilización</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error o estimador</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Mide calidad</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Orden observado</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Contrasta teoría e implementación</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-integración-adaptativa">5. Integración adaptativa</h2>
+<p>Una malla uniforme desperdicia evaluaciones en regiones suaves y
+puede resultar insuficiente donde la función cambia rápidamente. Un
+método adaptativo:</p>
+<ol type="1">
+<li>calcula una aproximación en un intervalo;</li>
+<li>divide el intervalo;</li>
+<li>compara la aproximación gruesa y la refinada;</li>
+<li>acepta o subdivide según una tolerancia local;</li>
+<li>combina las contribuciones aceptadas.</li>
+</ol>
+<p>La tolerancia global debe distribuirse de forma coherente. También
+debe existir una profundidad máxima para evitar recursión indefinida
+cerca de singularidades.</p>
+<h2 id="6-romberg">6. Romberg</h2>
+<p>La integración de Romberg aplica extrapolación de Richardson a
+aproximaciones del trapecio con pasos sucesivamente menores. Construye
+una tabla donde cada columna cancela un término adicional del error.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ventaja</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Limitación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Reutiliza evaluaciones</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Requiere integrando suave</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aumenta el orden sistemáticamente</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Puede engañar cerca de singularidades</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Produce estimadores internos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">La tabla puede estancarse por redondeo</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-cuadratura-de-gauss-legendre">7. Cuadratura de
+Gauss-Legendre</h2>
+<p>En lugar de usar nodos equiespaciados, la cuadratura gaussiana elige
+nodos y pesos para integrar exactamente polinomios del mayor grado
+posible con un número dado de evaluaciones.</p>
+<p><span class="formula">∫₋₁¹ f(x) dx ≈ Σ wᵢ f(xᵢ)</span></p>
+<p>Para un intervalo <code>[a,b]</code> se realiza un cambio lineal de
+variable. Los nodos son ceros de polinomios ortogonales de Legendre.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aspecto</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Newton-Cotes</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Gauss-Legendre</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Nodos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Generalmente equiespaciados</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Elegidos óptimamente</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Reutilización con datos tabulados</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Natural</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Puede requerir interpolación</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Exactitud por evaluación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Menor</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Alta para funciones suaves</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Interpretación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Geométrica y directa</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Basada en ortogonalidad</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="8-monte-carlo">8. Monte Carlo</h2>
+<p>Si <code>X</code> es uniforme en <code>[a,b]</code>, entonces:</p>
+<p><span class="formula">∫ₐᵇ f(x) dx = (b-a) E[f(X)]</span></p>
+<p>Con <code>N</code> muestras, la integral se estima mediante el
+promedio. El error estadístico típico disminuye como <code>1/√N</code>,
+mucho más lentamente que los métodos deterministas en una dimensión,
+pero la tasa es menos sensible a la dimensión.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> integral_monte_carlo(f, a, b, n, semilla<span class="op">=</span><span class="dv">1234</span>):</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    rng <span class="op">=</span> np.random.default_rng(semilla)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> rng.uniform(a, b, size<span class="op">=</span>n)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    valores <span class="op">=</span> f(x)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    estimacion <span class="op">=</span> (b <span class="op">-</span> a) <span class="op">*</span> valores.mean()</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    error_est <span class="op">=</span> (b <span class="op">-</span> a) <span class="op">*</span> valores.std(ddof<span class="op">=</span><span class="dv">1</span>) <span class="op">/</span> np.sqrt(n)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> estimacion, error_est</span></code></pre></div>
+<h3 id="reproducibilidad-y-aleatoriedad">Reproducibilidad y
+aleatoriedad</h3>
+<ul>
+<li>use un generador moderno;</li>
+<li>registre la semilla;</li>
+<li>no reinicie la semilla dentro de un ciclo de réplicas;</li>
+<li>estudie correlaciones cuando construya su propio generador;</li>
+<li>no confunda incertidumbre estadística con error sistemático del
+integrando o modelo.</li>
+</ul>
+<h2 id="9-selección-del-método">9. Selección del método</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Situación</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Método inicial razonable</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Datos tabulados uniformes</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Trapecio compuesto</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Función suave y barata en 1D</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Simpson o Gauss-Legendre</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Función con regiones localizadas difíciles</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Adaptativo</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Se requiere alta precisión en función suave</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Gauss o Romberg</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Dominio de alta dimensión</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Monte Carlo o variantes</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Singularidad conocida</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cambio de variable o partición especializada</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Oscilación rápida</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Método especializado o análisis de fase</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="10-aplicación-física-monte-carlo-variacional">10. Aplicación
+física: Monte Carlo variacional</h2>
+<p>En mecánica cuántica variacional se propone una función de prueba
+dependiente de parámetros y se estima el valor esperado de la energía.
+Monte Carlo permite muestrear configuraciones relevantes cuando la
+integral tiene dimensión alta.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Componente</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Función dentro del cálculo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Función de prueba</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Define la distribución y los parámetros a optimizar</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Muestreador</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Genera configuraciones representativas</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Energía local</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Construye el estimador de energía</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Promedio y varianza</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Entregan estimación e incertidumbre</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Tiempo de autocorrelación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Indica cuántas muestras son realmente independientes</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Optimización</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Busca parámetros con menor energía estimada</td>
+</tr>
+</tbody>
+</table></div>
+<p>Una semilla reproducible no elimina la correlación ni el sesgo de una
+cadena mal equilibrada. Deben examinarse calentamiento, independencia
+efectiva, varianza y estabilidad del estimador.</p>
+<h2 id="errores-frecuentes">Errores frecuentes</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Consecuencia</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Corrección</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Usar Simpson con <code>n</code> impar</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pesos incorrectos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Validar el parámetro</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Refinar sin contar evaluaciones</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comparación injusta</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Medir costo real</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aplicar método estándar sobre singularidad</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Convergencia lenta o fallo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Dividir o transformar</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aceptar coincidencia entre dos mallas</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Posible falsa convergencia</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Añadir referencia independiente</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Reportar Monte Carlo sin incertidumbre</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Resultado incompleto</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estimar error estándar</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cambiar semilla sin registrarla</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Resultado no reproducible</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Fijar y documentar</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="taller-propuesto">Taller propuesto</h2>
+<ol type="1">
+<li>Derive la regla del trapecio integrando el interpolante lineal.</li>
+<li>Implemente trapecio y verifique funciones constantes y
+lineales.</li>
+<li>Implemente Simpson y verifique polinomios hasta grado tres.</li>
+<li>Estime el orden observado para una función suave.</li>
+<li>Compare métodos por error frente a número de evaluaciones.</li>
+<li>Implemente una versión adaptativa y visualice los
+subintervalos.</li>
+<li>Construya una tabla de Romberg y detecte estancamiento.</li>
+<li>Use Gauss-Legendre con diferentes números de nodos.</li>
+<li>Estime <code>π</code> mediante Monte Carlo y compruebe la tasa
+<code>1/√N</code>.</li>
+<li>Compare cuadratura determinista y Monte Carlo en una y varias
+dimensiones.</li>
+</ol>
+<h2 id="producto-integrador-de-la-unidad">Producto integrador de la
+unidad</h2>
+<p>Resuelva una integral física mediante tres métodos de familias
+diferentes. Incluya cambio de unidades si se requiere, solución o
+referencia confiable, error frente a costo, orden observado, tratamiento
+de singularidades y recomendación del método más apropiado.</p>
+<h2 id="lista-de-comprobación">Lista de comprobación</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Revisé dominio, suavidad y
+singularidades.</label></li>
+<li><label><input type="checkbox" />Verifiqué requisitos como paridad de
+<code>n</code>.</label></li>
+<li><label><input type="checkbox" />Conté evaluaciones de la
+función.</label></li>
+<li><label><input type="checkbox" />Estudié convergencia o
+incertidumbre.</label></li>
+<li><label><input type="checkbox" />No confundí estimador interno con
+error exacto.</label></li>
+<li><label><input type="checkbox" />Registré semilla en Monte
+Carlo.</label></li>
+<li><label><input type="checkbox" />Interpreté el resultado con unidades
+físicas.</label></li>
+</ul>
+<h2 id="fuentes-para-esta-unidad">Fuentes para esta unidad</h2>
+<ul>
+<li>Santiago Echeverri Arteaga, <em>Notas de clase: Métodos
+Numéricos</em>, apartados de Newton-Cotes, integración adaptativa,
+Gauss-Legendre y aleatoriedad.</li>
+<li>Alex Gezerlis, <em>Numerical Methods in Physics with Python</em>,
+2.ª edición, capítulo 7.</li>
+</ul>
+<footer class="course-footer">
+  <strong>Material de referencia:</strong> notas de clase de Métodos Numéricos, acta de concertación 2026-2 y Alex Gezerlis, <em>Numerical Methods in Physics with Python</em>, 2.ª edición (Cambridge University Press, 2023). Consulte los PDF adjuntos en Moodle.
+</footer>
+</body>
+</html>

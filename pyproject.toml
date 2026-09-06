@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "metodos-numericos-uniquindio"
+version = "0.1.0"
+description = "Material docente para un curso de métodos numéricos en física"
+requires-python = ">=3.11"
+dependencies = [
+    "matplotlib>=3.8",
+    "numpy>=1.26",
+    "scipy>=1.11",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+]
+notebooks = [
+    "ipykernel>=6",
+    "jupyterlab>=4",
+]
+ml = [
+    "tensorflow>=2.16",
+]
+
+[tool.setuptools]
+packages = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

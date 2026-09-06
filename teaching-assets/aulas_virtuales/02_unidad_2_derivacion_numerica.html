@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Unidad 2. Derivación numérica y diferenciación
+automática</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>
+    :root {
+      --mn-verde: #176b4d;
+      --mn-verde-oscuro: #0f4f39;
+      --mn-verde-claro: #e8f5ef;
+      --mn-azul: #22577a;
+      --mn-borde: #718096;
+      --mn-fondo: #f7faf9;
+      --mn-texto: #1f2937;
+      --mn-blanco: #ffffff;
+      --mn-alerta: #fff7df;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 1.5rem 2.2rem 4rem;
+      color: var(--mn-texto);
+      background: var(--mn-blanco);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.62;
+    }
+
+    h1, h2, h3, h4 { line-height: 1.25; }
+
+    h1 {
+      margin: .5rem 0 1.5rem;
+      padding-bottom: .7rem;
+      color: var(--mn-verde-oscuro);
+      border-bottom: 4px solid var(--mn-verde);
+      font-size: 2rem;
+    }
+
+    h2 {
+      margin-top: 2.25rem;
+      padding: .48rem .75rem;
+      color: var(--mn-verde-oscuro);
+      background: var(--mn-verde-claro);
+      border-left: 5px solid var(--mn-verde);
+      font-size: 1.45rem;
+    }
+
+    h3 { margin-top: 1.7rem; color: var(--mn-azul); font-size: 1.2rem; }
+    h4 { color: #315f72; }
+
+    p, li { max-width: 96ch; }
+    li + li { margin-top: .25rem; }
+
+    a { color: #145f8c; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    a:hover { color: #0b405f; }
+
+    blockquote,
+    .nota {
+      margin: 1.25rem 0;
+      padding: .9rem 1.1rem;
+      color: #234437;
+      background: #f0f8f4;
+      border-left: 5px solid var(--mn-verde);
+      border-radius: 0 6px 6px 0;
+    }
+
+    .advertencia {
+      margin: 1.25rem 0;
+      padding: .9rem 1.1rem;
+      background: var(--mn-alerta);
+      border-left: 5px solid #c88719;
+      border-radius: 0 6px 6px 0;
+    }
+
+    code {
+      padding: .1rem .28rem;
+      border-radius: 4px;
+      color: #8b1e3f;
+      background: #eef1f4;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: .92em;
+    }
+
+    pre {
+      overflow-x: auto;
+      padding: 1rem 1.1rem;
+      border: 1px solid #cbd5df;
+      border-radius: 7px;
+      background: #f6f8fa;
+      line-height: 1.45;
+    }
+
+    pre code { padding: 0; color: #1f2937; background: transparent; }
+
+    .table-responsive {
+      width: 100%;
+      margin: 1.2rem 0 1.6rem;
+      overflow-x: auto;
+      border-radius: 7px;
+      box-shadow: 0 1px 4px rgba(23, 78, 57, .15);
+    }
+
+    table.course-table {
+      width: 100%;
+      min-width: 640px;
+      margin: 0;
+      border: 1px solid var(--mn-borde);
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    table.course-table th,
+    table.course-table td {
+      padding: .62rem .72rem;
+      border: 1px solid var(--mn-borde) !important;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table.course-table thead th {
+      color: #fff;
+      background: var(--mn-verde-oscuro);
+      font-weight: 700;
+    }
+
+    table.course-table tbody tr:nth-child(even) td { background: #f3f8f5; }
+    table.course-table tbody tr:hover td { background: #e5f2eb; }
+
+    .formula {
+      display: block;
+      max-width: 100%;
+      margin: .8rem 0;
+      padding: .7rem .9rem;
+      overflow-x: auto;
+      border: 1px solid #c8d5cf;
+      border-radius: 5px;
+      background: var(--mn-fondo);
+      color: #173f31;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      white-space: nowrap;
+    }
+
+    .course-footer {
+      margin-top: 3rem;
+      padding: 1rem 1.2rem;
+      color: #26483a;
+      background: var(--mn-verde-claro);
+      border-top: 3px solid var(--mn-verde);
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 1rem 1rem 3rem; font-size: 15px; }
+      h1 { font-size: 1.65rem; }
+      h2 { font-size: 1.3rem; }
+    }
+
+    @media print {
+      body { max-width: none; padding: 0; font-size: 10.5pt; }
+      h2 { break-after: avoid; }
+      pre, blockquote, table { break-inside: avoid; }
+      .table-responsive { overflow: visible; box-shadow: none; }
+      table.course-table { min-width: 0; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+<!-- Sin barra de navegación: este archivo se utiliza como recurso independiente en Moodle. -->
+<h1 id="unidad-2-derivación-numérica-y-diferenciación-automática">Unidad
+2. Derivación numérica y diferenciación automática</h1>
+<h2 id="sentido-de-la-unidad">Sentido de la unidad</h2>
+<p>En numerosos problemas físicos se conoce una función mediante datos
+discretos, una simulación costosa o un programa que no ofrece una
+expresión simbólica sencilla. Aproximar derivadas permite estimar
+velocidades, aceleraciones, gradientes, sensibilidades y operadores
+diferenciales, pero exige equilibrar dos errores opuestos: el
+truncamiento disminuye al reducir el paso y el redondeo puede
+aumentar.</p>
+<blockquote>
+<p><strong>Lectura orientadora:</strong> notas de clase, apartados de
+derivadas, extrapolación de Richardson y números duales; Gezerlis,
+capítulo 3.</p>
+</blockquote>
+<h2 id="resultados-de-aprendizaje">Resultados de aprendizaje</h2>
+<p>Al finalizar la unidad, el estudiante podrá:</p>
+<ul>
+<li>derivar fórmulas de diferencias finitas mediante series de
+Taylor;</li>
+<li>identificar el orden del error de una aproximación;</li>
+<li>seleccionar un tamaño de paso mediante evidencia;</li>
+<li>construir diferencias de mayor orden;</li>
+<li>aplicar extrapolación de Richardson;</li>
+<li>explicar la idea de diferenciación automática con números
+duales;</li>
+<li>validar una derivada aproximada contra una referencia conocida;</li>
+<li>aplicar derivación a problemas físicos discretos.</li>
+</ul>
+<h2 id="secuencia-sugerida-de-clases">Secuencia sugerida de clases</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Clase</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pregunta central</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Métodos</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Producto</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">1</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo aproximar una derivada a partir de valores cercanos?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Adelantada, atrasada y central</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Derivación con Taylor</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">2</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Qué tan pequeño debe ser el paso?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error de truncamiento y redondeo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Curva de error frente a <code>h</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">3</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo aumentar el orden sin reducir excesivamente el paso?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Plantillas y Richardson</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comparación de órdenes</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">4</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Se puede derivar un programa sin diferencias?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Números duales y regla de la cadena</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Implementación mínima</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">5</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo se usan derivadas discretas en física?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Datos de movimiento y energía cinética local</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Informe de validación</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="1-diferencias-finitas-básicas">1. Diferencias finitas
+básicas</h2>
+<p>Para una función suficientemente suave y un paso <code>h</code>, las
+aproximaciones más comunes son:</p>
+<p><span class="formula">Adelantada: f′(x) ≈ [f(x+h) - f(x)] /
+h</span></p>
+<p><span class="formula">Atrasada: f′(x) ≈ [f(x) - f(x-h)] /
+h</span></p>
+<p><span class="formula">Central: f′(x) ≈ [f(x+h) - f(x-h)] /
+(2h)</span></p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Fórmula</th>
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Orden de truncamiento</th>
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evaluaciones nuevas</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Uso típico</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Adelantada</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><code>O(h)</code></td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">1 o 2</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Extremo izquierdo o datos causales</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Atrasada</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><code>O(h)</code></td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">1 o 2</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Extremo derecho</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Central</td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><code>O(h²)</code></td>
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">2</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Puntos interiores y mayor precisión</td>
+</tr>
+</tbody>
+</table></div>
+<p>El orden indica cómo cambia el error dominante cuando <code>h</code>
+se reduce. Si el método es de orden dos, dividir <code>h</code> por dos
+debería reducir aproximadamente el error de truncamiento por un factor
+de cuatro, mientras este error sea dominante.</p>
+<h2 id="2-derivación-mediante-taylor">2. Derivación mediante Taylor</h2>
+<p>La serie de Taylor permite expresar <code>f(x+h)</code> y
+<code>f(x-h)</code> alrededor de <code>x</code>. Al sumar o restar las
+expansiones se cancelan términos y se obtiene tanto la fórmula como el
+término dominante del error.</p>
+<p>Esta derivación cumple dos propósitos:</p>
+<ol type="1">
+<li>explica por qué una fórmula aproxima la derivada;</li>
+<li>permite anticipar la tasa de convergencia antes de programar.</li>
+</ol>
+<h3 id="actividad-guiada">Actividad guiada</h3>
+<p>Derive la fórmula central para la primera derivada. Identifique qué
+términos se cancelan y por qué el error es de orden <code>h²</code>.
+Después derive una aproximación central para la segunda derivada.</p>
+<p><span class="formula">f″(x) ≈ [f(x+h) - 2f(x) + f(x-h)] /
+h²</span></p>
+<h2 id="3-el-dilema-del-tamaño-de-paso">3. El dilema del tamaño de
+paso</h2>
+<p>Reducir <code>h</code> disminuye el error de truncamiento, pero
+intensifica la resta entre valores cercanos y la división por un número
+pequeño. El error total suele presentar una curva en forma de U.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Región</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comportamiento dominante</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><code>h</code> grande</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Truncamiento</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">El error disminuye con la pendiente teórica</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><code>h</code> intermedio</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Zona útil</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aparece un mínimo del error</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><code>h</code> extremadamente pequeño</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Redondeo y cancelación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">El error se estanca o aumenta</td>
+</tr>
+</tbody>
+</table></div>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> derivada_central(f, x, h):</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (f(x <span class="op">+</span> h) <span class="op">-</span> f(x <span class="op">-</span> h)) <span class="op">/</span> (<span class="fl">2.0</span> <span class="op">*</span> h)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>exacta <span class="op">=</span> math.cos(x)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">17</span>):</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    h <span class="op">=</span> <span class="fl">10.0</span> <span class="op">**</span> (<span class="op">-</span>k)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    aprox <span class="op">=</span> derivada_central(math.sin, x, h)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    error <span class="op">=</span> <span class="bu">abs</span>(aprox <span class="op">-</span> exacta)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(k, h, error)</span></code></pre></div>
+<p>El mejor <code>h</code> depende de la función, la escala de
+<code>x</code>, la precisión aritmética y la fórmula. Por eso no debe
+fijarse universalmente como “un número muy pequeño”.</p>
+<h2 id="4-plantillas-de-mayor-orden">4. Plantillas de mayor orden</h2>
+<p>Usar más puntos permite cancelar más términos de Taylor. Por ejemplo,
+una plantilla central de cinco puntos puede alcanzar orden cuatro. El
+beneficio tiene costo: más evaluaciones, mayor sensibilidad a ruido y
+tratamiento especial en fronteras.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Decisión</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ventaja</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Riesgo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Más puntos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Mayor orden formal</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Más costo y mayor exposición a datos ruidosos</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Paso menor</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Menor truncamiento inicialmente</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Más redondeo y cancelación</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Paso mayor</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Menos sensibilidad al ruido</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pérdida de detalle local</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ajuste local</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Suaviza datos experimentales</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Introduce sesgo del modelo elegido</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-extrapolación-de-richardson">5. Extrapolación de
+Richardson</h2>
+<p>Si una aproximación tiene la forma:</p>
+<p><span class="formula">D(h) = D + C hᵖ + términos de orden
+superior</span></p>
+<p>pueden combinarse <code>D(h)</code> y <code>D(h/2)</code> para
+cancelar el término principal:</p>
+<p><span class="formula">D_R = [2ᵖ D(h/2) - D(h)] / (2ᵖ - 1)</span></p>
+<p>La extrapolación no corrige una fórmula que se encuentre en la zona
+dominada por redondeo ni garantiza mejora si la expansión asintótica aún
+no es válida.</p>
+<h3 id="experimento-recomendado">Experimento recomendado</h3>
+<p>Calcule la derivada de <code>sin(x)</code> en <code>x=1</code>
+mediante diferencia adelantada y Richardson. Para una secuencia de
+pasos, compare el error y estime experimentalmente el orden usando
+cocientes entre errores consecutivos.</p>
+<h2 id="6-diferenciación-automática-y-números-duales">6. Diferenciación
+automática y números duales</h2>
+<p>La diferenciación automática aplica sistemáticamente la regla de la
+cadena a las operaciones de un programa. No es diferenciación simbólica
+ni una diferencia finita.</p>
+<p>Un número dual puede representarse como <code>a + bε</code>, con
+<code>ε² = 0</code>. Si se evalúa una función suave en
+<code>x + ε</code>, el resultado conserva simultáneamente el valor y la
+derivada:</p>
+<p><span class="formula">f(x + ε) = f(x) + f′(x) ε</span></p>
+<h3 id="estructura-mínima">Estructura mínima</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Dual:</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, valor, derivada<span class="op">=</span><span class="fl">0.0</span>):</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.valor <span class="op">=</span> valor</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.derivada <span class="op">=</span> derivada</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__add__</span>(<span class="va">self</span>, otro):</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(otro, Dual):</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>            otro <span class="op">=</span> Dual(otro)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Dual(</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.valor <span class="op">+</span> otro.valor,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.derivada <span class="op">+</span> otro.derivada,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__mul__</span>(<span class="va">self</span>, otro):</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(otro, Dual):</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>            otro <span class="op">=</span> Dual(otro)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> Dual(</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.valor <span class="op">*</span> otro.valor,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.derivada <span class="op">*</span> otro.valor <span class="op">+</span> <span class="va">self</span>.valor <span class="op">*</span> otro.derivada,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        )</span></code></pre></div>
+<p>Completar la división, potencias y funciones elementales constituye
+un ejercicio de aplicación de reglas de derivación y diseño de
+software.</p>
+<h2 id="7-datos-experimentales">7. Datos experimentales</h2>
+<p>Si se conocen posiciones <code>x(tᵢ)</code> en tiempos discretos, la
+velocidad puede estimarse con diferencias. Sin embargo, derivar
+amplifica ruido: pequeñas variaciones en posición se dividen por
+<code>h</code>.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Situación</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estrategia posible</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Validación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Datos uniformes y poco ruidosos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Diferencia central interior</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comparar varios pasos efectivos</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Extremos del intervalo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Fórmula unilateral</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Revisar orden menor</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Datos no uniformes</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Interpolación local o pesos específicos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Caso polinómico conocido</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Datos ruidosos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ajuste o suavizado local antes de derivar</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Residuos y sensibilidad al ancho de ventana</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="8-aplicación-física-energía-cinética-local">8. Aplicación
+física: energía cinética local</h2>
+<p>En mecánica cuántica, el operador cinético involucra una segunda
+derivada de la función de onda. Al aproximarla numéricamente se deben
+tratar con cuidado:</p>
+<ul>
+<li>puntos donde la función de onda es muy pequeña;</li>
+<li>condiciones de frontera;</li>
+<li>normalización;</li>
+<li>error de discretización;</li>
+<li>unidades del operador;</li>
+<li>comparación con una función de onda de solución conocida.</li>
+</ul>
+<p>Una implementación físicamente sensata debe estudiar tanto el error
+de la derivada como el comportamiento de la magnitud derivada.</p>
+<h2 id="errores-frecuentes">Errores frecuentes</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Consecuencia</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Corrección</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Elegir <code>h</code> demasiado pequeño sin estudiar el error</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Resultado dominado por redondeo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Barrer varios órdenes de magnitud</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Usar fórmula central en una frontera sin datos externos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Acceso inválido o hipótesis oculta</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Emplear fórmula unilateral o condición de frontera</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Reportar solo un valor de la derivada</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">No se demuestra confiabilidad</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comparar pasos y calcular error o residuo</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ignorar ruido experimental</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Derivada altamente oscilante</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ajuste local y análisis de sensibilidad</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Confundir diferenciación automática con simbólica</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Interpretación incorrecta</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Seguir el grafo de operaciones y la regla de la cadena</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aplicar Richardson sin conocer el orden <code>p</code></td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cancelación incorrecta</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Derivar o medir el orden primero</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="taller-propuesto">Taller propuesto</h2>
+<ol type="1">
+<li>Derive las diferencias adelantada, atrasada y central usando
+Taylor.</li>
+<li>Para <code>f(x)=exp(x)</code>, grafique el error de la diferencia
+central en <code>x=1</code> para <code>h</code> entre <code>10⁻¹</code>
+y <code>10⁻¹⁶</code>.</li>
+<li>Estime la pendiente del error en la región de truncamiento.</li>
+<li>Compare la segunda derivada de <code>sin(x)</code> con su valor
+exacto.</li>
+<li>Construya una fórmula central de cinco puntos resolviendo las
+condiciones sobre los coeficientes.</li>
+<li>Aplique Richardson a una diferencia de orden uno y a una de orden
+dos.</li>
+<li>Genere datos sintéticos de posición con ruido y compare velocidades
+obtenidas con diferentes pasos.</li>
+<li>Implemente números duales para suma, producto y potencia entera;
+verifique tres funciones.</li>
+<li>Compare diferencia finita, paso complejo si está disponible y
+diferenciación automática para una función sensible.</li>
+<li>Explique por qué derivar datos suele ser más inestable que
+integrarlos.</li>
+</ol>
+<h2 id="producto-integrador-de-la-unidad">Producto integrador de la
+unidad</h2>
+<p>Construya un <strong>atlas de derivadas numéricas</strong> para una
+función con derivada conocida. El producto debe contener:</p>
+<ul>
+<li>al menos tres aproximaciones;</li>
+<li>gráfica logarítmica de error contra <code>h</code>;</li>
+<li>estimación experimental del orden;</li>
+<li>identificación de las regiones de truncamiento y redondeo;</li>
+<li>costo en evaluaciones de la función;</li>
+<li>recomendación final sustentada.</li>
+</ul>
+<h2 id="lista-de-comprobación">Lista de comprobación</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Derivé o cité el orden de la fórmula
+utilizada.</label></li>
+<li><label><input type="checkbox" />Estudié más de un tamaño de
+paso.</label></li>
+<li><label><input type="checkbox" />Separé error de truncamiento y
+redondeo.</label></li>
+<li><label><input type="checkbox" />Traté explícitamente los extremos
+del dominio.</label></li>
+<li><label><input type="checkbox" />Validé con una derivada exacta o una
+referencia independiente.</label></li>
+<li><label><input type="checkbox" />Expliqué el costo en
+evaluaciones.</label></li>
+<li><label><input type="checkbox" />Interpreté la derivada con sus
+unidades físicas.</label></li>
+</ul>
+<h2 id="fuentes-para-esta-unidad">Fuentes para esta unidad</h2>
+<ul>
+<li>Santiago Echeverri Arteaga, <em>Notas de clase: Métodos
+Numéricos</em>, apartados sobre derivadas, error total, diferencias
+centrales, Richardson y números duales.</li>
+<li>Alex Gezerlis, <em>Numerical Methods in Physics with Python</em>,
+2.ª edición, capítulo 3.</li>
+</ul>
+<footer class="course-footer">
+  <strong>Material de referencia:</strong> notas de clase de Métodos Numéricos, acta de concertación 2026-2 y Alex Gezerlis, <em>Numerical Methods in Physics with Python</em>, 2.ª edición (Cambridge University Press, 2023). Consulte los PDF adjuntos en Moodle.
+</footer>
+</body>
+</html>

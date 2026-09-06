@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Unidad 5. Aproximación, interpolación y ajuste</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <style>
+    :root {
+      --mn-verde: #176b4d;
+      --mn-verde-oscuro: #0f4f39;
+      --mn-verde-claro: #e8f5ef;
+      --mn-azul: #22577a;
+      --mn-borde: #718096;
+      --mn-fondo: #f7faf9;
+      --mn-texto: #1f2937;
+      --mn-blanco: #ffffff;
+      --mn-alerta: #fff7df;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 1.5rem 2.2rem 4rem;
+      color: var(--mn-texto);
+      background: var(--mn-blanco);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.62;
+    }
+
+    h1, h2, h3, h4 { line-height: 1.25; }
+
+    h1 {
+      margin: .5rem 0 1.5rem;
+      padding-bottom: .7rem;
+      color: var(--mn-verde-oscuro);
+      border-bottom: 4px solid var(--mn-verde);
+      font-size: 2rem;
+    }
+
+    h2 {
+      margin-top: 2.25rem;
+      padding: .48rem .75rem;
+      color: var(--mn-verde-oscuro);
+      background: var(--mn-verde-claro);
+      border-left: 5px solid var(--mn-verde);
+      font-size: 1.45rem;
+    }
+
+    h3 { margin-top: 1.7rem; color: var(--mn-azul); font-size: 1.2rem; }
+    h4 { color: #315f72; }
+
+    p, li { max-width: 96ch; }
+    li + li { margin-top: .25rem; }
+
+    a { color: #145f8c; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    a:hover { color: #0b405f; }
+
+    blockquote,
+    .nota {
+      margin: 1.25rem 0;
+      padding: .9rem 1.1rem;
+      color: #234437;
+      background: #f0f8f4;
+      border-left: 5px solid var(--mn-verde);
+      border-radius: 0 6px 6px 0;
+    }
+
+    .advertencia {
+      margin: 1.25rem 0;
+      padding: .9rem 1.1rem;
+      background: var(--mn-alerta);
+      border-left: 5px solid #c88719;
+      border-radius: 0 6px 6px 0;
+    }
+
+    code {
+      padding: .1rem .28rem;
+      border-radius: 4px;
+      color: #8b1e3f;
+      background: #eef1f4;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: .92em;
+    }
+
+    pre {
+      overflow-x: auto;
+      padding: 1rem 1.1rem;
+      border: 1px solid #cbd5df;
+      border-radius: 7px;
+      background: #f6f8fa;
+      line-height: 1.45;
+    }
+
+    pre code { padding: 0; color: #1f2937; background: transparent; }
+
+    .table-responsive {
+      width: 100%;
+      margin: 1.2rem 0 1.6rem;
+      overflow-x: auto;
+      border-radius: 7px;
+      box-shadow: 0 1px 4px rgba(23, 78, 57, .15);
+    }
+
+    table.course-table {
+      width: 100%;
+      min-width: 640px;
+      margin: 0;
+      border: 1px solid var(--mn-borde);
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    table.course-table th,
+    table.course-table td {
+      padding: .62rem .72rem;
+      border: 1px solid var(--mn-borde) !important;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table.course-table thead th {
+      color: #fff;
+      background: var(--mn-verde-oscuro);
+      font-weight: 700;
+    }
+
+    table.course-table tbody tr:nth-child(even) td { background: #f3f8f5; }
+    table.course-table tbody tr:hover td { background: #e5f2eb; }
+
+    .formula {
+      display: block;
+      max-width: 100%;
+      margin: .8rem 0;
+      padding: .7rem .9rem;
+      overflow-x: auto;
+      border: 1px solid #c8d5cf;
+      border-radius: 5px;
+      background: var(--mn-fondo);
+      color: #173f31;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      white-space: nowrap;
+    }
+
+    .course-footer {
+      margin-top: 3rem;
+      padding: 1rem 1.2rem;
+      color: #26483a;
+      background: var(--mn-verde-claro);
+      border-top: 3px solid var(--mn-verde);
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 1rem 1rem 3rem; font-size: 15px; }
+      h1 { font-size: 1.65rem; }
+      h2 { font-size: 1.3rem; }
+    }
+
+    @media print {
+      body { max-width: none; padding: 0; font-size: 10.5pt; }
+      h2 { break-after: avoid; }
+      pre, blockquote, table { break-inside: avoid; }
+      .table-responsive { overflow: visible; box-shadow: none; }
+      table.course-table { min-width: 0; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+<!-- Sin barra de navegación: este archivo se utiliza como recurso independiente en Moodle. -->
+<h1 id="unidad-5-aproximación-interpolación-y-ajuste">Unidad 5.
+Aproximación, interpolación y ajuste</h1>
+<h2 id="sentido-de-la-unidad">Sentido de la unidad</h2>
+<p>En física es frecuente conocer una magnitud solo en puntos discretos.
+Puede ser necesario estimar valores intermedios, derivar una tabla,
+integrar datos o construir un modelo que describa una tendencia
+experimental. La interpolación intenta pasar exactamente por los datos;
+el ajuste acepta discrepancias y busca representar una relación
+subyacente.</p>
+<p>Confundir ambos objetivos produce modelos engañosos. Esta unidad
+desarrolla criterios para decidir cuándo interpolar, cuándo ajustar y
+cómo validar la aproximación.</p>
+<blockquote>
+<p><strong>Lectura orientadora:</strong> notas de clase, apartados de
+aproximación, interpolación polinómica, nodos de Chebyshev y mínimos
+cuadrados; Gezerlis, capítulo 6.</p>
+</blockquote>
+<h2 id="resultados-de-aprendizaje">Resultados de aprendizaje</h2>
+<p>Al finalizar la unidad, el estudiante podrá:</p>
+<ul>
+<li>diferenciar interpolación, aproximación y regresión;</li>
+<li>construir interpolantes de Lagrange;</li>
+<li>explicar problemas de la base monomial y de matrices de
+Vandermonde;</li>
+<li>reconocer el fenómeno de Runge y la utilidad de los nodos de
+Chebyshev;</li>
+<li>utilizar interpolación por tramos y splines;</li>
+<li>formular mínimos cuadrados lineales y ponderados;</li>
+<li>analizar residuos y evitar extrapolaciones injustificadas;</li>
+<li>seleccionar un modelo según el propósito físico y la calidad de
+datos.</li>
+</ul>
+<h2 id="secuencia-sugerida-de-clases">Secuencia sugerida de clases</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Clase</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pregunta central</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Herramientas</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">1</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Qué significa aproximar datos discretos?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Interpolación frente a ajuste</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Tabla de decisión</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">2</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo construir un polinomio que pase por los datos?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Lagrange y forma baricéntrica</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Interpolante validado en nodos</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">3</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Por qué un polinomio de mayor grado puede ser peor?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Runge, Vandermonde y Chebyshev</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Comparación gráfica</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">4</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo conservar comportamiento local?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Interpolación por tramos y splines</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Continuidad y derivadas</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">5</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo modelar datos con incertidumbre?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Mínimos cuadrados y ponderación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Residuos y parámetros</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">6</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo validar un modelo?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Separación de datos, residuos y plausibilidad</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Informe de decisión</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="1-tres-objetivos-diferentes">1. Tres objetivos diferentes</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Objetivo</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Condición principal</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Uso típico</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Interpolación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">La curva pasa por cada dato</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Tabla considerada exacta o re-muestreo</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ajuste</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">La curva minimiza una discrepancia</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Mediciones con ruido</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aproximación funcional</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Se reemplaza una función compleja por otra manejable</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cálculo, compresión o análisis</td>
+</tr>
+</tbody>
+</table></div>
+<p>La elección depende de la procedencia de los datos. Si cada punto
+tiene incertidumbre experimental, obligar a la curva a pasar exactamente
+por todos puede modelar el ruido en lugar del fenómeno.</p>
+<h2 id="2-interpolación-polinómica">2. Interpolación polinómica</h2>
+<p>Dados <code>n+1</code> puntos con abscisas distintas, existe un único
+polinomio de grado a lo sumo <code>n</code> que pasa por todos.</p>
+<p>La forma de Lagrange es:</p>
+<p><span class="formula">P(x) = Σ yᵢ Lᵢ(x), con Lᵢ(xⱼ)=1 si i=j y 0 en
+otro caso</span></p>
+<p>Cada polinomio cardinal <code>Lᵢ</code> selecciona el dato
+<code>yᵢ</code> en su nodo y se anula en los demás.</p>
+<h3 id="comprobaciones-esenciales">Comprobaciones esenciales</h3>
+<ul>
+<li><code>P(xᵢ)</code> debe coincidir con <code>yᵢ</code> dentro de la
+tolerancia;</li>
+<li>no debe haber abscisas repetidas;</li>
+<li>las unidades de <code>P</code> deben ser las de <code>y</code>;</li>
+<li>la evaluación debe estudiarse dentro y fuera del intervalo de
+datos;</li>
+<li>la precisión no se demuestra solo verificando los nodos.</li>
+</ul>
+<h2 id="3-base-monomial-y-matriz-de-vandermonde">3. Base monomial y
+matriz de Vandermonde</h2>
+<p>También puede escribirse:</p>
+<p><span class="formula">P(x) = c₀ + c₁x + c₂x² + … + cₙxⁿ</span></p>
+<p>Determinar los coeficientes produce un sistema con matriz de
+Vandermonde. Aunque la representación es válida, puede estar mal
+condicionada para grados altos o nodos desfavorables.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Representación</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ventaja</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Riesgo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Monomios</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Familiar y directa</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Condicionamiento pobre</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Lagrange</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Construcción conceptual clara</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evaluación ingenua costosa</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Baricéntrica</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evaluación estable y eficiente</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Requiere pesos bien construidos</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Newton dividido</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Permite añadir nodos progresivamente</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Depende del orden y escalamiento</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-error-de-interpolación">4. Error de interpolación</h2>
+<p>Para una función suficientemente suave, el error incluye el producto
+de las distancias a los nodos:</p>
+<p><span class="formula">f(x)-P(x) = f⁽ⁿ⁺¹⁾(ξ)/(n+1)! ·
+Π(x-xᵢ)</span></p>
+<p>Esta expresión muestra que el error depende de la función, del número
+de nodos y de su ubicación. Aumentar el grado no garantiza una mejora
+uniforme.</p>
+<h2 id="5-fenómeno-de-runge-y-nodos-de-chebyshev">5. Fenómeno de Runge y
+nodos de Chebyshev</h2>
+<p>Con nodos equiespaciados, ciertos interpolantes de alto grado oscilan
+fuertemente cerca de los extremos. Los nodos de Chebyshev concentran más
+puntos en esas regiones y reducen el máximo del producto nodal.</p>
+<h3 id="experimento-recomendado">Experimento recomendado</h3>
+<p>Interpole una función suave con curvatura intensa usando:</p>
+<ol type="1">
+<li>nodos equiespaciados;</li>
+<li>nodos de Chebyshev;</li>
+<li>spline cúbico.</li>
+</ol>
+<p>Compare error máximo, comportamiento en extremos y costo. No use
+únicamente la figura: incluya una métrica cuantitativa sobre una malla
+densa.</p>
+<h2 id="6-interpolación-por-tramos-y-splines">6. Interpolación por
+tramos y splines</h2>
+<p>Un spline cúbico utiliza polinomios de bajo grado en subintervalos y
+exige continuidad de la función y de ciertas derivadas.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Método</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Continuidad</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ventaja</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Limitación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Lineal por tramos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Función continua</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Simple y no oscila demasiado</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Derivada discontinua en nodos</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cúbico por tramos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Depende de construcción</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Mayor suavidad</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Requiere condiciones de frontera</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Spline cúbico</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Usualmente hasta segunda derivada</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Buen equilibrio local-global</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Extrapolación sigue siendo riesgosa</td>
+</tr>
+</tbody>
+</table></div>
+<p>Las condiciones “natural”, “sujeta” u otras cambian el comportamiento
+en los extremos. Deben elegirse de acuerdo con la información física
+disponible.</p>
+<h2 id="7-mínimos-cuadrados-lineales">7. Mínimos cuadrados lineales</h2>
+<p>Para un modelo lineal en los parámetros, se busca minimizar:</p>
+<p><span class="formula">S(c) = Σ [yᵢ - modelo(xᵢ;c)]²</span></p>
+<p>Un modelo puede ser lineal en parámetros aunque no sea lineal en
+<code>x</code>. Por ejemplo, <code>c₀ + c₁x + c₂x²</code> es lineal
+respecto a <code>c₀</code>, <code>c₁</code> y <code>c₂</code>.</p>
+<p>Las ecuaciones normales tienen la forma:</p>
+<p><span class="formula">Aᵀ A c = Aᵀ y</span></p>
+<p>Formar <code>AᵀA</code> puede empeorar el condicionamiento. En
+cálculos serios suelen preferirse QR o SVD, especialmente cuando las
+columnas de <code>A</code> son casi dependientes.</p>
+<h2 id="8-ajuste-ponderado">8. Ajuste ponderado</h2>
+<p>Si cada medición tiene una incertidumbre estándar <code>σᵢ</code>,
+una discrepancia habitual es:</p>
+<p><span class="formula">χ² = Σ [(yᵢ-modelo(xᵢ))/σᵢ]²</span></p>
+<p>Los pesos solo son justificables si representan la calidad de los
+datos. Usar pesos arbitrarios para “mejorar” la gráfica cambia el
+problema sin una base experimental.</p>
+<h2 id="9-análisis-de-residuos">9. Análisis de residuos</h2>
+<p><span class="formula">rᵢ = yᵢ - modelo(xᵢ)</span></p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Patrón del residuo</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Posible interpretación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Dispersión aleatoria alrededor de cero</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Modelo compatible con la tendencia</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Curvatura sistemática</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Falta estructura en el modelo</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Amplitud creciente</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Varianza no constante</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Puntos aislados extremos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Datos atípicos o error de registro</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Bloques correlacionados</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Dependencia temporal o espacial ignorada</td>
+</tr>
+</tbody>
+</table></div>
+<p>Una buena métrica global puede ocultar un patrón. Por eso debe
+acompañarse de una gráfica de residuos y una discusión física.</p>
+<h2 id="10-extrapolación">10. Extrapolación</h2>
+<p>Interpolar entre datos y extrapolar fuera del intervalo no son
+operaciones equivalentes. Un modelo puede describir muy bien la región
+observada y fallar rápidamente fuera de ella.</p>
+<p>Antes de extrapolar, pregunte:</p>
+<ul>
+<li>¿el modelo expresa una ley física o solo una tendencia
+empírica?;</li>
+<li>¿cambia el régimen físico fuera del intervalo?;</li>
+<li>¿cuánto crece la incertidumbre?;</li>
+<li>¿existen límites o comportamientos asintóticos conocidos?;</li>
+<li>¿la predicción puede validarse con datos adicionales?</li>
+</ul>
+<h2 id="11-aplicación-física-contraste-de-la-ley-de-stefanboltzmann">11.
+Aplicación física: contraste de la ley de Stefan–Boltzmann</h2>
+<p>Una aplicación integradora consiste en analizar mediciones de
+potencia radiada y temperatura para contrastar una dependencia
+proporcional a la cuarta potencia de la temperatura. El interés no es
+obtener una recta bonita, sino decidir qué transformación y qué modelo
+respetan la física.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Decisión</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pregunta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Variables</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Se ajusta <code>P</code> contra <code>T⁴</code>, o se linealizan
+logaritmos?</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Incertidumbre</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo cambia al transformar los datos?</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Parámetros</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Qué significado físico tienen pendiente e intercepto?</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Residuos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Aparece curvatura o un sesgo sistemático?</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Validación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿El exponente estimado es compatible con cuatro?</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Limitaciones</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Se han ignorado pérdidas, emisividad o fondo térmico?</td>
+</tr>
+</tbody>
+</table></div>
+<p>Este caso permite comparar un ajuste basado en la ley física con un
+polinomio puramente descriptivo y discutir por qué menor residuo no
+siempre implica mejor modelo científico.</p>
+<h2 id="errores-frecuentes">Errores frecuentes</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Consecuencia</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Corrección</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Interpolar mediciones ruidosas con grado alto</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Sobreajuste y oscilaciones</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ajuste o spline con criterio</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Formar Vandermonde sin escalar</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Condicionamiento pobre</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Centrar/escalar o usar otra base</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Validar solo en nodos</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error cero por construcción</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evaluar entre nodos</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Elegir grado por apariencia</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Decisión subjetiva</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Residuos y validación</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Formar ecuaciones normales sin revisar condición</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pérdida de cifras</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">QR o SVD</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Extrapolar sin advertencia</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Predicción no sustentada</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Limitar dominio y reportar incertidumbre</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="taller-propuesto">Taller propuesto</h2>
+<ol type="1">
+<li>Construya a mano un interpolante de Lagrange para tres puntos.</li>
+<li>Verifique computacionalmente la propiedad cardinal.</li>
+<li>Compare base monomial y forma baricéntrica en nodos crecientes.</li>
+<li>Reproduzca el fenómeno de Runge con nodos equiespaciados.</li>
+<li>Sustituya los nodos por Chebyshev y cuantifique la mejora.</li>
+<li>Compare interpolación lineal, polinómica global y spline
+cúbico.</li>
+<li>Ajuste una recta a datos con incertidumbre igual y desigual.</li>
+<li>Resuelva un ajuste polinómico con ecuaciones normales, QR y SVD;
+compare residuos y sensibilidad.</li>
+<li>Genere una gráfica de residuos y diagnostique su patrón.</li>
+<li>Diseñe un ejemplo donde interpolación y ajuste respondan preguntas
+diferentes.</li>
+</ol>
+<h2 id="producto-integrador-de-la-unidad">Producto integrador de la
+unidad</h2>
+<p>Analice un conjunto pequeño de datos físicos mediante un interpolante
+y un ajuste. Compare propósito, error dentro del intervalo, residuos,
+sensibilidad al número de puntos y extrapolación. Finalice con una
+recomendación argumentada sobre cuál representación debe usarse y para
+qué.</p>
+<h2 id="lista-de-comprobación">Lista de comprobación</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Expliqué si los datos se consideran
+exactos o inciertos.</label></li>
+<li><label><input type="checkbox" />Justifiqué interpolación o
+ajuste.</label></li>
+<li><label><input type="checkbox" />Revisé condicionamiento y
+escalamiento.</label></li>
+<li><label><input type="checkbox" />Validé entre nodos o con datos
+separados.</label></li>
+<li><label><input type="checkbox" />Analicé residuos, no solo una
+métrica global.</label></li>
+<li><label><input type="checkbox" />Delimité cualquier
+extrapolación.</label></li>
+<li><label><input type="checkbox" />Conservé unidades y significado de
+parámetros.</label></li>
+</ul>
+<h2 id="fuentes-para-esta-unidad">Fuentes para esta unidad</h2>
+<ul>
+<li>Santiago Echeverri Arteaga, <em>Notas de clase: Métodos
+Numéricos</em>, apartados de aproximación, interpolación y mínimos
+cuadrados.</li>
+<li>Alex Gezerlis, <em>Numerical Methods in Physics with Python</em>,
+2.ª edición, capítulo 6.</li>
+</ul>
+<footer class="course-footer">
+  <strong>Material de referencia:</strong> notas de clase de Métodos Numéricos, acta de concertación 2026-2 y Alex Gezerlis, <em>Numerical Methods in Physics with Python</em>, 2.ª edición (Cambridge University Press, 2023). Consulte los PDF adjuntos en Moodle.
+</footer>
+</body>
+</html>

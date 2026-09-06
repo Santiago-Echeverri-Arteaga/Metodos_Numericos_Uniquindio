@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Unidad 3. Álgebra lineal numérica</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>
+    :root {
+      --mn-verde: #176b4d;
+      --mn-verde-oscuro: #0f4f39;
+      --mn-verde-claro: #e8f5ef;
+      --mn-azul: #22577a;
+      --mn-borde: #718096;
+      --mn-fondo: #f7faf9;
+      --mn-texto: #1f2937;
+      --mn-blanco: #ffffff;
+      --mn-alerta: #fff7df;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 1.5rem 2.2rem 4rem;
+      color: var(--mn-texto);
+      background: var(--mn-blanco);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.62;
+    }
+
+    h1, h2, h3, h4 { line-height: 1.25; }
+
+    h1 {
+      margin: .5rem 0 1.5rem;
+      padding-bottom: .7rem;
+      color: var(--mn-verde-oscuro);
+      border-bottom: 4px solid var(--mn-verde);
+      font-size: 2rem;
+    }
+
+    h2 {
+      margin-top: 2.25rem;
+      padding: .48rem .75rem;
+      color: var(--mn-verde-oscuro);
+      background: var(--mn-verde-claro);
+      border-left: 5px solid var(--mn-verde);
+      font-size: 1.45rem;
+    }
+
+    h3 { margin-top: 1.7rem; color: var(--mn-azul); font-size: 1.2rem; }
+    h4 { color: #315f72; }
+
+    p, li { max-width: 96ch; }
+    li + li { margin-top: .25rem; }
+
+    a { color: #145f8c; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    a:hover { color: #0b405f; }
+
+    blockquote,
+    .nota {
+      margin: 1.25rem 0;
+      padding: .9rem 1.1rem;
+      color: #234437;
+      background: #f0f8f4;
+      border-left: 5px solid var(--mn-verde);
+      border-radius: 0 6px 6px 0;
+    }
+
+    .advertencia {
+      margin: 1.25rem 0;
+      padding: .9rem 1.1rem;
+      background: var(--mn-alerta);
+      border-left: 5px solid #c88719;
+      border-radius: 0 6px 6px 0;
+    }
+
+    code {
+      padding: .1rem .28rem;
+      border-radius: 4px;
+      color: #8b1e3f;
+      background: #eef1f4;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: .92em;
+    }
+
+    pre {
+      overflow-x: auto;
+      padding: 1rem 1.1rem;
+      border: 1px solid #cbd5df;
+      border-radius: 7px;
+      background: #f6f8fa;
+      line-height: 1.45;
+    }
+
+    pre code { padding: 0; color: #1f2937; background: transparent; }
+
+    .table-responsive {
+      width: 100%;
+      margin: 1.2rem 0 1.6rem;
+      overflow-x: auto;
+      border-radius: 7px;
+      box-shadow: 0 1px 4px rgba(23, 78, 57, .15);
+    }
+
+    table.course-table {
+      width: 100%;
+      min-width: 640px;
+      margin: 0;
+      border: 1px solid var(--mn-borde);
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    table.course-table th,
+    table.course-table td {
+      padding: .62rem .72rem;
+      border: 1px solid var(--mn-borde) !important;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table.course-table thead th {
+      color: #fff;
+      background: var(--mn-verde-oscuro);
+      font-weight: 700;
+    }
+
+    table.course-table tbody tr:nth-child(even) td { background: #f3f8f5; }
+    table.course-table tbody tr:hover td { background: #e5f2eb; }
+
+    .formula {
+      display: block;
+      max-width: 100%;
+      margin: .8rem 0;
+      padding: .7rem .9rem;
+      overflow-x: auto;
+      border: 1px solid #c8d5cf;
+      border-radius: 5px;
+      background: var(--mn-fondo);
+      color: #173f31;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      white-space: nowrap;
+    }
+
+    .course-footer {
+      margin-top: 3rem;
+      padding: 1rem 1.2rem;
+      color: #26483a;
+      background: var(--mn-verde-claro);
+      border-top: 3px solid var(--mn-verde);
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 1rem 1rem 3rem; font-size: 15px; }
+      h1 { font-size: 1.65rem; }
+      h2 { font-size: 1.3rem; }
+    }
+
+    @media print {
+      body { max-width: none; padding: 0; font-size: 10.5pt; }
+      h2 { break-after: avoid; }
+      pre, blockquote, table { break-inside: avoid; }
+      .table-responsive { overflow: visible; box-shadow: none; }
+      table.course-table { min-width: 0; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+<!-- Sin barra de navegación: este archivo se utiliza como recurso independiente en Moodle. -->
+<h1 id="unidad-3-álgebra-lineal-numérica">Unidad 3. Álgebra lineal
+numérica</h1>
+<h2 id="sentido-de-la-unidad">Sentido de la unidad</h2>
+<p>Muchos modelos físicos terminan en un sistema lineal, un problema de
+valores propios o una operación matricial. La forma matemática
+<code>Ax=b</code> parece compacta, pero su solución numérica depende de
+la estructura de <code>A</code>, de su condicionamiento, del método
+elegido y de los errores acumulados.</p>
+<p>Esta unidad estudia cómo resolver sistemas sin calcular
+explícitamente la inversa, cómo medir la calidad de la respuesta y cómo
+elegir entre métodos directos e iterativos.</p>
+<blockquote>
+<p><strong>Lectura orientadora:</strong> notas de clase, apartados de
+matrices, sistemas triangulares, eliminación gaussiana, factorización,
+Jacobi y método de potencias; Gezerlis, capítulo 4.</p>
+</blockquote>
+<h2 id="resultados-de-aprendizaje">Resultados de aprendizaje</h2>
+<p>Al terminar la unidad, el estudiante podrá:</p>
+<ul>
+<li>utilizar normas vectoriales y matriciales para cuantificar
+magnitudes y errores;</li>
+<li>interpretar el número de condición;</li>
+<li>resolver sistemas triangulares por sustitución;</li>
+<li>implementar eliminación gaussiana con pivoteo;</li>
+<li>explicar la factorización LU y su utilidad;</li>
+<li>aplicar métodos iterativos básicos y analizar su convergencia;</li>
+<li>calcular un valor propio dominante mediante el método de
+potencias;</li>
+<li>verificar soluciones mediante residuos y reconstrucciones.</li>
+</ul>
+<h2 id="secuencia-sugerida-de-clases">Secuencia sugerida de clases</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Clase</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pregunta central</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Métodos</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">1</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo medir vectores, matrices y perturbaciones?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Normas, residuo y condición</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Experimento de sensibilidad</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">2</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo se aprovecha una matriz triangular?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Sustitución hacia adelante y atrás</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Funciones verificadas</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">3</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo transformar un sistema general?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Eliminación gaussiana y pivoteo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Traza de operaciones</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">4</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo reutilizar el trabajo para varios vectores
+<code>b</code>?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">LU</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Reconstrucción <code>PA≈LU</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">5</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cuándo conviene iterar?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Jacobi y Gauss-Seidel</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Historia de residuos</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">6</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">¿Cómo obtener estados o modos característicos?</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Potencias y cociente de Rayleigh</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Valor propio y residuo</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="1-del-modelo-físico-al-sistema-lineal">1. Del modelo físico al
+sistema lineal</h2>
+<p>Un sistema se escribe como:</p>
+<p><span class="formula">A x = b</span></p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Elemento</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Interpretación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><code>A</code></td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Relaciones entre incógnitas; puede contener geometría, acoplamientos
+o discretización</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><code>x</code></td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cantidades desconocidas</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><code>b</code></td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Fuentes, condiciones o mediciones conocidas</td>
+</tr>
+</tbody>
+</table></div>
+<p>Ejemplos físicos incluyen redes de resistencias, balances de fuerzas,
+ajustes lineales, discretización de ecuaciones diferenciales y expansión
+en una base.</p>
+<h2 id="2-normas-y-residuo">2. Normas y residuo</h2>
+<p>Una norma permite medir el tamaño de un vector o una matriz. Para una
+aproximación <code>x_aprox</code>, el residuo es:</p>
+<p><span class="formula">r = b - A x_aprox</span></p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Métrica</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Qué informa</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Limitación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">`</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"></td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">x_aprox - x</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">`</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"></td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">r</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error relativo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error comparado con la escala</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Depende de la norma elegida</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error hacia atrás</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Perturbación mínima que justificaría la respuesta</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Su interpretación exige contexto</td>
+</tr>
+</tbody>
+</table></div>
+<p>El residuo siempre debe acompañarse de una escala. Un valor
+<code>10⁻⁶</code> puede ser grande o pequeño según <code>||A||</code>,
+<code>||x||</code> y <code>||b||</code>.</p>
+<h2 id="3-condicionamiento">3. Condicionamiento</h2>
+<p>El número de condición estima cuánto puede amplificarse una
+perturbación relativa de los datos:</p>
+<p><span class="formula">κ(A) = ||A|| · ||A⁻¹||</span></p>
+<p>No es necesario ni recomendable formar <code>A⁻¹</code> para resolver
+el sistema. Las bibliotecas calculan o estiman la condición mediante
+algoritmos especializados.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Valor cualitativo de <code>κ(A)</code></th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Interpretación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cercano a 1</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Perturbaciones pequeñas suelen permanecer pequeñas</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Moderado</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Se pierden algunas cifras significativas</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Muy grande</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">La solución puede ser extremadamente sensible</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Infinito o matriz singular</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">No existe solución única</td>
+</tr>
+</tbody>
+</table></div>
+<p>La condición depende también de la norma y del escalamiento de
+variables. Antes de concluir que un modelo es intrínsecamente malo,
+revise si las variables mezclan escalas o unidades incompatibles.</p>
+<h2 id="4-sistemas-triangulares">4. Sistemas triangulares</h2>
+<p>Si <code>L</code> es triangular inferior, la solución se obtiene
+desde la primera ecuación hacia la última. Si <code>U</code> es
+triangular superior, se procede en sentido inverso.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sustitucion_atras(U, b):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">len</span>(b)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> [<span class="fl">0.0</span>] <span class="op">*</span> n</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n <span class="op">-</span> <span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>):</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        suma <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(i <span class="op">+</span> <span class="dv">1</span>, n):</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>            suma <span class="op">+=</span> U[i][j] <span class="op">*</span> x[j]</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        x[i] <span class="op">=</span> (b[i] <span class="op">-</span> suma) <span class="op">/</span> U[i][i]</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x</span></code></pre></div>
+<p>Una implementación completa debe detectar pivotes nulos o demasiado
+pequeños y verificar dimensiones compatibles.</p>
+<h2 id="5-eliminación-gaussiana-y-pivoteo">5. Eliminación gaussiana y
+pivoteo</h2>
+<p>La eliminación transforma <code>A</code> en una matriz triangular
+mediante operaciones elementales sobre filas. Luego se aplica
+sustitución hacia atrás.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Etapa</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Objetivo</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Riesgo numérico</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Selección de pivote</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Elegir el elemento divisor</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Dividir por cero o por un valor muy pequeño</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Eliminación</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Anular entradas bajo el pivote</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Acumular redondeo y pérdida de escala</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Sustitución</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Recuperar las incógnitas</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Propagar error desde las últimas ecuaciones</td>
+</tr>
+</tbody>
+</table></div>
+<p>El pivoteo parcial intercambia filas para elegir, dentro de la
+columna activa, un elemento de mayor magnitud. Esta estrategia suele
+mejorar la estabilidad y debe formar parte del algoritmo general.</p>
+<h3 id="evidencia-de-corrección">Evidencia de corrección</h3>
+<p>No basta con comparar <code>x</code> visualmente. Calcule:</p>
+<ul>
+<li>el residuo <code>b-Ax</code>;</li>
+<li>el residuo relativo;</li>
+<li>la diferencia frente a <code>numpy.linalg.solve</code> en casos de
+prueba;</li>
+<li>el comportamiento ante matrices singulares o casi singulares.</li>
+</ul>
+<h2 id="6-factorización-lu">6. Factorización LU</h2>
+<p>La eliminación puede expresarse mediante una factorización:</p>
+<p><span class="formula">P A = L U</span></p>
+<p><code>P</code> representa los intercambios de fila, <code>L</code> es
+triangular inferior y <code>U</code> triangular superior. Para resolver
+varios sistemas con la misma <code>A</code> y diferentes vectores
+<code>b</code>, se factoriza una vez y luego se realizan
+sustituciones.</p>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Escenario</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estrategia conveniente</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Un solo sistema denso pequeño</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"><code>solve</code> o eliminación con pivoteo</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Muchos vectores <code>b</code> con la misma <code>A</code></td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Factorizar una vez y reutilizar</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Matriz simétrica definida positiva</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cholesky, si se han verificado las condiciones</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Matriz grande y dispersa</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Método y estructura de datos especializados</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ajuste por mínimos cuadrados</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">QR o SVD en lugar de ecuaciones normales cuando la estabilidad
+importa</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="7-métodos-iterativos">7. Métodos iterativos</h2>
+<p>En Jacobi, cada componente de la nueva aproximación se calcula usando
+exclusivamente los valores de la iteración anterior. Gauss-Seidel
+reutiliza de inmediato los valores ya actualizados.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> jacobi(A, b, x0, tol<span class="op">=</span><span class="fl">1e-10</span>, max_iter<span class="op">=</span><span class="dv">500</span>):</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> np.asarray(A, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> np.asarray(b, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.asarray(x0, dtype<span class="op">=</span><span class="bu">float</span>).copy()</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    diagonal <span class="op">=</span> np.diag(A)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    resto <span class="op">=</span> A <span class="op">-</span> np.diagflat(diagonal)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    historial <span class="op">=</span> []</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(max_iter):</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        nuevo <span class="op">=</span> (b <span class="op">-</span> resto <span class="op">@</span> x) <span class="op">/</span> diagonal</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        residuo <span class="op">=</span> np.linalg.norm(b <span class="op">-</span> A <span class="op">@</span> nuevo)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        historial.append(residuo)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> residuo <span class="op">&lt;=</span> tol:</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> nuevo, historial</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> nuevo</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">RuntimeError</span>(<span class="st">&quot;Jacobi no alcanzó la tolerancia&quot;</span>)</span></code></pre></div>
+<p>El método no converge para cualquier matriz. La dominancia diagonal
+es una condición suficiente útil, pero no necesaria. Un análisis más
+general estudia el radio espectral de la matriz de iteración.</p>
+<h2 id="8-valores-propios-y-método-de-potencias">8. Valores propios y
+método de potencias</h2>
+<p>Los valores propios aparecen en modos normales, energías permitidas,
+estabilidad y dinámica lineal:</p>
+<p><span class="formula">A v = λ v</span></p>
+<p>El método de potencias aplica repetidamente <code>A</code> a un
+vector y lo normaliza. Bajo condiciones apropiadas, la dirección
+converge al vector propio asociado al valor propio de mayor
+magnitud.</p>
+<h3 id="diagnósticos">Diagnósticos</h3>
+<ul>
+<li>residuo propio <code>||Av-λv||</code>;</li>
+<li>cambio del cociente de Rayleigh;</li>
+<li>sensibilidad a la aproximación inicial;</li>
+<li>presencia de valores propios dominantes con igual magnitud;</li>
+<li>comparación con <code>numpy.linalg.eig</code> o <code>eigh</code>
+cuando corresponda.</li>
+</ul>
+<h2 id="9-aplicaciones-físicas">9. Aplicaciones físicas</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aplicación</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Objeto matricial</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Rotaciones</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Matriz ortogonal</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Cambio de coordenadas sin alterar norma</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Momento de inercia</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Tensor simétrico</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ejes principales y momentos propios</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Sistemas acoplados</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Matriz dinámica</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Frecuencias y modos normales</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Espín</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Operadores matriciales</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Estados y resultados posibles</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Schrödinger discretizada</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Hamiltoniano</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Energías y estados propios</td>
+</tr>
+</tbody>
+</table></div>
+<p>En matrices simétricas o hermíticas conviene usar algoritmos que
+aprovechen esa estructura; las soluciones deberían reflejar valores
+propios reales y vectores propios ortogonales dentro de la precisión
+numérica.</p>
+<h2 id="errores-frecuentes">Errores frecuentes</h2>
+<div class="table-responsive"><table class="course-table table table-bordered table-striped" border="1" cellpadding="7" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #718096;">
+<thead style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">
+<tr class="header">
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Error</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Por qué es problemático</th>
+<th style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Alternativa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Calcular <code>inv(A) @ b</code></td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Es más costoso y suele ser menos estable</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Usar <code>solve(A, b)</code></td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Omitir pivoteo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Puede dividir por números pequeños</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Pivoteo parcial</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Usar solo `</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;"></td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">x_{k+1}-x_k</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Ignorar escala de variables</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Empeora interpretación y condición</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Reescalar con criterio físico</td>
+</tr>
+<tr class="odd">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aplicar Jacobi sin revisar convergencia</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Puede divergir</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Analizar matriz e historial</td>
+</tr>
+<tr class="even">
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Aceptar un valor propio sin residuo</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">La normalización no prueba corrección</td>
+<td style="border:1px solid #718096; padding:.62rem .72rem; vertical-align:top;">Calcular `</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="taller-propuesto">Taller propuesto</h2>
+<ol type="1">
+<li>Implemente sustitución hacia adelante y atrás; pruebe matrices de
+tamaños 2, 3 y 5.</li>
+<li>Cuente operaciones dominantes de la eliminación y de la
+sustitución.</li>
+<li>Implemente eliminación gaussiana sin pivoteo y construya un caso que
+falle.</li>
+<li>Añada pivoteo parcial y registre los intercambios.</li>
+<li>Compruebe <code>PA≈LU</code> y compare varios vectores
+<code>b</code>.</li>
+<li>Perturbe ligeramente una matriz bien condicionada y una casi
+singular; compare soluciones.</li>
+<li>Implemente Jacobi y grafique residuo contra iteración.</li>
+<li>Compare Jacobi y Gauss-Seidel en una matriz diagonalmente
+dominante.</li>
+<li>Use el método de potencias en una matriz simétrica con valores
+propios conocidos.</li>
+<li>Discretice un operador de segunda derivada y explore sus primeros
+valores propios.</li>
+</ol>
+<h2 id="producto-integrador-de-la-unidad">Producto integrador de la
+unidad</h2>
+<p>Resuelva un problema físico lineal mediante dos estrategias. El
+informe debe incluir la construcción de <code>A</code> y <code>b</code>,
+interpretación de unidades, condición estimada, solución, residuo,
+comparación entre métodos y una perturbación controlada de los
+datos.</p>
+<h2 id="lista-de-comprobación">Lista de comprobación</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />No calculé la inversa explícita para
+resolver <code>Ax=b</code>.</label></li>
+<li><label><input type="checkbox" />Verifiqué dimensiones y estructura
+de la matriz.</label></li>
+<li><label><input type="checkbox" />Incluí pivoteo cuando
+corresponde.</label></li>
+<li><label><input type="checkbox" />Reporté un residuo
+escalado.</label></li>
+<li><label><input type="checkbox" />Estimé o discutí el
+condicionamiento.</label></li>
+<li><label><input type="checkbox" />Registré convergencia en métodos
+iterativos.</label></li>
+<li><label><input type="checkbox" />Para valores propios, comprobé
+<code>Av≈λv</code>.</label></li>
+</ul>
+<h2 id="fuentes-para-esta-unidad">Fuentes para esta unidad</h2>
+<ul>
+<li>Santiago Echeverri Arteaga, <em>Notas de clase: Métodos
+Numéricos</em>, apartados de matrices, sistemas lineales y problemas
+propios.</li>
+<li>Alex Gezerlis, <em>Numerical Methods in Physics with Python</em>,
+2.ª edición, capítulo 4 y apéndice C.2.</li>
+</ul>
+<footer class="course-footer">
+  <strong>Material de referencia:</strong> notas de clase de Métodos Numéricos, acta de concertación 2026-2 y Alex Gezerlis, <em>Numerical Methods in Physics with Python</em>, 2.ª edición (Cambridge University Press, 2023). Consulte los PDF adjuntos en Moodle.
+</footer>
+</body>
+</html>
