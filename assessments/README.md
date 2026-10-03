@@ -27,8 +27,8 @@ respuestas de revisión manual.
 | Caso de transferencia | Interpreta un caso nuevo y justifica una decisión | 20 % manual |
 
 Esta distribución es una recomendación operativa, no una condición adicional del acta.
-Reduce la corrección manual a dos respuestas por estudiante y evita tareas calificadas
-entre parciales.
+La estructura se aplica a los intentos de examen. La alternativa de talleres para el
+segundo parcial se describe al final de este documento.
 
 ## Qué se evalúa en cada corte
 
@@ -68,8 +68,45 @@ sin redactar comentarios individuales extensos.
 
 ## Límites del sistema
 
-- No se califican ejercicios del libro, talleres semanales ni avances.
+- No se califican ejercicios del libro, talleres de práctica ni avances. Las actividades con aporte al segundo parcial se especifican abajo.
 - Los códigos del libro son material de consulta, no bancos de respuestas.
 - Los talleres de las páginas HTML son práctica de apoyo y no generan una cuarta nota.
 - La duración, disponibilidad y reglas específicas de cada intento se publican en Aulas
   Virtuales.
+
+## Segundo parcial: talleres y exoneración
+
+El segundo parcial permite integrar el trabajo de clase y un proyecto opcional. Su
+peso en la nota del curso sigue siendo **33,3 %**; la escala de este parcial es de 0 a 5.
+
+| Actividad | Valoración R sobre 100 | Aporte máximo |
+| --- | --- | ---: |
+| [Laboratorio computacional del miércoles 7/10](../teaching-assets/talleres_2026_10/miercoles_ejercicios.md) | R_m | 1 punto |
+| [Proyecto del viernes 9/10, variante B](../teaching-assets/taller_integrador_aproximacion.md) | R_v | 1 punto |
+| [Proyecto opcional de regresión](../teaching-assets/talleres_2026_10/proyecto_opcional_regresion.md) | R_p | 3 puntos |
+| **Total por talleres** | | **5 puntos** |
+
+Los aportes son `M=R_m/100`, `V=R_v/100` y `P=3R_p/100`.
+**Los tres talleres con valoración completa (100/100 cada uno) dan 5.0 y
+exoneración del examen del segundo parcial.** La variante A del viernes es
+práctica y no reemplaza la entrega evaluable de la variante B.
+
+Quien no realiza el proyecto opcional presenta el examen del segundo parcial,
+que aporta hasta **3 puntos**: si E es su nota sobre 5, el aporte es `0.6 E`.
+La nota resulta `M + V + 0.6 E`.
+
+Si se presenta el proyecto opcional con valoración parcial y no se alcanza la
+exoneración, se presenta el examen. Se conserva el mejor aporte dentro del bloque
+de tres puntos: `nota = M + V + max(P, 0.6 E)`. No se suman proyecto y examen
+como bloques independientes, ni se pierden los puntos ya obtenidos del proyecto.
+Por ejemplo, M=0.8, V=0.9, P=2.1 y E=4.0 producen `0.8+0.9+2.4=4.1`.
+El máximo sigue siendo 5.0.
+
+Las entregas deben ser ejecutables y corresponder al trabajo individual. Las
+rúbricas de cada enunciado determinan la valoración; completar archivos sin
+verificar resultados no equivale a obtener la totalidad de los puntos.
+
+Las ampliaciones de consulta no son necesarias para obtener 100/100. El miércoles
+se valoran el experimento 1 y dos electivos; el viernes y el opcional se valoran
+únicamente según su núcleo obligatorio. Se permite reutilizar código de una
+entrega en las siguientes, indicando su procedencia.

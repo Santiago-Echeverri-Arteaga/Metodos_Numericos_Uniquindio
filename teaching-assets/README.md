@@ -1,6 +1,10 @@
 # Material docente
 
 - `Clase1.pptx`: presentación de clase.
+- [Miércoles 7 de octubre: laboratorio computacional](talleres_2026_10/miercoles_ejercicios.md), con código de apoyo.
+- [Viernes 9 de octubre: proyecto de equilibrio](taller_integrador_aproximacion.md), con dos variantes, plantilla y rúbrica.
+- [Proyecto opcional de regresión](talleres_2026_10/proyecto_opcional_regresion.md): hasta tres puntos y ruta de exoneración.
+- [Guía de entregas y alcance](talleres_2026_10/README.md), con plantillas y criterios de evaluación.
 - `aulas_virtuales/`: ocho páginas HTML entregadas como apoyo en Aulas Virtuales.
 - `archive/Metodos_Numericos_notas_2025.pdf`: versión histórica de 24 páginas.
 

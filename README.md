@@ -40,6 +40,9 @@ Las fuentes y decisiones de inclusión están registradas en
 
 ## Material de estudio
 
+- [Laboratorio computacional del miércoles 7 de octubre](teaching-assets/talleres_2026_10/miercoles_ejercicios.md) — dos horas; tres experimentos elegidos de un banco de cinco sobre los temas vistos en clase, hasta un punto del segundo parcial.
+- [Proyecto integrado del viernes 9 de octubre: equilibrio de un resorte](teaching-assets/taller_integrador_aproximacion.md) — dos variantes de dos horas, plantilla y rúbrica; la evaluable aporta hasta un punto al segundo parcial.
+- [Proyecto opcional: regresión y decisión de operación](teaching-assets/talleres_2026_10/proyecto_opcional_regresion.md) — regresión lineal, Ridge y Lasso; hasta tres puntos. Los tres talleres con valoración completa permiten la exoneración.
 - [Presentación general](teaching-assets/aulas_virtuales/00_presentacion_general_metodos_numericos.md)
 - [Unidad 1: error numérico](teaching-assets/aulas_virtuales/01_unidad_1_error_numerico.md)
 - [Unidad 2: derivación](teaching-assets/aulas_virtuales/02_unidad_2_derivacion_numerica.md)
@@ -81,6 +84,12 @@ python -m pip install --upgrade pip
 python -m pip install -e ".[dev,notebooks]"
 ```
 
+Para el proyecto opcional de regresión:
+
+```powershell
+python -m pip install -e ".[regresion]"
+```
+
 TensorFlow se mantiene como dependencia opcional porque solamente se utiliza en el
 notebook de MNIST:
 
@@ -100,6 +109,6 @@ python -m pytest
 - Las modificaciones para clase deben hacerse en `examples/class_demos/`.
 - Los tres parciales se realizan mediante Aulas Virtuales en las fechas concertadas.
 - Las actividades calificadas no son ejercicios del libro.
-- Los talleres de apoyo no añaden calificaciones al plan concertado.
+- El segundo parcial admite la ruta de talleres: miércoles hasta 1 punto, viernes hasta 1 y proyecto opcional hasta 3. Los tres con valoración completa permiten la exoneración; consulte `assessments/README.md`.
 - Los materiales de terceros conservan sus propios términos de uso; revise
   [references/README.md](references/README.md) antes de redistribuirlos.

@@ -14,6 +14,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+regresion = [
+    "scikit-learn>=1.4",
+]
 dev = [
     "pytest>=8",
 ]
