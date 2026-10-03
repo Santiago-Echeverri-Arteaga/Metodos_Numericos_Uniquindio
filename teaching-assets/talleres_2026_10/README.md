@@ -4,7 +4,7 @@ Aplicaremos los temas vistos en clase mediante experimentos computacionales y de
 
 | Actividad | Enunciado | Dedicación | Aporte máximo |
 | --- | --- | --- | ---: |
-| Jueves 8 de octubre | [Diagnóstico numérico](jueves_ejercicios.md) | Trabajo de clase de dos horas | 1 punto |
+| Jueves 8 de octubre | [De las ecuaciones al programa](jueves_ejercicios.md) | Trabajo de clase de dos horas | 1 punto |
 | Viernes 9 de octubre | [Equilibrio de un resorte](../taller_integrador_aproximacion.md) | Trabajo de clase de dos horas | 1 punto |
 | Proyecto opcional | [Regresión y posición de operación](proyecto_opcional_regresion.md) | Trabajo independiente, aproximadamente cuatro a seis horas | 3 puntos |
 
@@ -12,7 +12,7 @@ Aplicaremos los temas vistos en clase mediante experimentos computacionales y de
 
 ## Desarrollo y entrega
 
-El jueves comprende tres investigaciones a partir del código del libro: estabilidad y orden de suma, diferenciación con resolución limitada y diagnóstico y adaptación de bisección. El viernes integra interpolación, mínimos cuadrados, eliminación gaussiana, derivación y búsqueda de un equilibrio. El proyecto opcional conecta esos métodos con validación de modelos y regresión lineal, Ridge y Lasso.
+El jueves comprende cinco ejercicios de programación a partir del código del libro: acumulación, diferenciación, adaptación de bisección, ensamblaje de un sistema lineal y mínimos cuadrados. El viernes integra interpolación, mínimos cuadrados, eliminación gaussiana, derivación y búsqueda de un equilibrio. El proyecto opcional conecta esos métodos con validación de modelos y regresión lineal, Ridge y Lasso.
 
 Cada entrega consiste en un script o notebook ejecutable con las evidencias y explicaciones indicadas en su enunciado. Las rúbricas incluyen la sustentación: explicar el código, justificar resultados y razonar sobre una modificación de parámetros.
 
