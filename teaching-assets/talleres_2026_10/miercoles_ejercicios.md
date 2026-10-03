@@ -1,74 +1,64 @@
-# Miércoles: laboratorio computacional de métodos numéricos
+# Miércoles: experimentos de precisión y convergencia
 
-**7 de octubre de 2026 · Sesión de dos horas · Trabajo individual · Hasta 1 punto del segundo parcial**
+**7 de octubre de 2026 · Trabajo individual · Dos horas · Hasta 1 punto del segundo parcial**
 
-En este taller llevaremos los temas vistos en clase a experimentos computacionales: programar, cambiar una condición, medir qué ocurre y explicar el resultado.
+Desarrolla un programa que permita estudiar cómo la aritmética y las decisiones de un algoritmo afectan sus resultados. Resuelve los tres ejercicios y sustenta las conclusiones con mediciones obtenidas por tu código.
 
-**Entrega exactamente tres experimentos: el 1 y dos a elección entre 2, 3, 4 y 5.** Todos tienen el mismo valor. No es necesario completar los cinco. Las ampliaciones son de consulta, no dan puntos adicionales y no se requieren para obtener la máxima nota ni la exoneración.
+## Herramientas y autoría
 
-Usa un notebook o script con NumPy, SciPy y Matplotlib. Puedes reutilizar tus rutinas de clase y las del [módulo de apoyo](miercoles_apoyo.py), indicando su procedencia. Completa únicamente las funciones de la [plantilla](miercoles_base.py) correspondientes a tus elecciones. No se requiere implementar todos los métodos desde cero.
+Escribe tus funciones a partir de las fórmulas y los procedimientos vistos en clase. Puedes usar `math`, NumPy para arreglos y Matplotlib para gráficas. La suma compensada, las diferencias y la bisección deben estar implementadas por ti. Las funciones de biblioteca que resuelven directamente esos cálculos no sustituyen las implementaciones solicitadas.
 
-## 1. Aritmética confiable · Obligatorio
+Puedes consultar apuntes, fórmulas y documentación. No se admite entregar rutinas copiadas del libro, del repositorio, de tutoriales o de otro estudiante. Identifica las fuentes conceptuales utilizadas y conserva el código para explicar su funcionamiento.
 
-Compara `sqrt(1+x)-1` con `x/(sqrt(1+x)+1)` para `x=10**(-k)`, `k=1,...,16`. Calcula el error relativo de la primera usando la forma racionalizada como referencia numérica estable. Reporta el primer valor ensayado para el que la resta devuelve cero y explica la pérdida de información.
+## 1. Recuperar información que se pierde al calcular
 
-Implementa o adapta tu suma de Kahan y compárala con un ciclo ordinario sobre `[1e16]+[1.0]*n+[-1e16]`, con `n=10,100,1000`. Guarda resultado y error absoluto respecto a n. No uses `sum` para representar la suma ingenua, porque su implementación puede variar entre versiones.
+Para `x=10**(-k)`, con `k=1,...,16`, compara:
 
-**Entrega:** una gráfica o tabla del barrido, una tabla de las sumas y una conclusión de tres a cinco frases. Explica qué corrige Kahan y qué no corrige.
+`a(x)=sqrt(1+x)-1`,  `b(x)=x/(sqrt(1+x)+1)`.
 
-**Ampliación no evaluada:** clasificar overflow y underflow con `1e308*1e308` y `1e-200*1e-200`; experimentar con propagación de error en `v=d/t` para `d=10±0.1` y `t=2±0.02`.
+Antes de ejecutar, explica cuál esperas que conserve mejor la información cuando x sea pequeño. Calcula el error relativo de a usando b como referencia numérica estable, registra el primer x ensayado para el cual a devuelve cero y explica la causa. La referencia también se evalúa con aritmética finita.
 
-## 2. Elegir el paso de una derivada · Electivo
+Implementa la suma de Kahan y una suma ordinaria mediante un ciclo. Compara ambas sobre `[1e16]+[1.0]*n+[-1e16]`, con `n=10,100,1000`; el valor matemático de cada suma es n. Registra resultado y error absoluto. Explica qué información guarda la compensación y por qué no corrige errores ya presentes en los datos.
 
-Completa diferencia central y Richardson en la plantilla. Para `f(x)=exp(x)` en `x=0`, compara **derecha de dos puntos, central y Richardson**, usando `h=10**(-k)`, `k=1,...,12`. La referencia es `f'(0)=1`; la fórmula lateral está disponible en el módulo de apoyo.
+**Evidencia:** tabla del barrido, tabla de sumas y una explicación breve de los dos fenómenos.
 
-Grafica error absoluto contra h en escala logarítmica, identifica el mejor h ensayado de cada fórmula y estima el orden con los dos primeros errores no nulos. Si un error vale cero, señálalo sin inventar un valor para la gráfica. Explica el comportamiento al reducir demasiado h y distingue orden de precisión de orden de derivación.
+## 2. Elegir el tamaño de paso con evidencia
 
-**Entrega:** funciones, una figura, tabla de mejor paso y conclusión de tres a cinco frases.
+Implementa la diferencia central y su extrapolación de Richardson:
 
-**Ampliación no evaluada:** incluir las otras fórmulas laterales, segunda derivada o una evaluación con números duales de `p(x)=x³+2x`.
+`D_h(x)=[f(x+h)-f(x-h)]/(2h)`,
 
-## 3. Una solución y su convergencia · Electivo
+`R_h(x)=[4D_(h/2)(x)-D_h(x)]/3`.
 
-Usa `A=[[0,2,1],[2,1,0],[1,0,2]]` y `b=[7,4,7]`. El módulo suministra `P,L,U` con la convención `PA=LU`. Resuelve `Lw=Pb` y `Ux=w` usando tus sustituciones de clase o `scipy.linalg.solve_triangular`. Verifica `PA=LU` y reporta el residuo máximo de `Ax-b`. Explica el intercambio que evita un pivote inicial nulo.
+Usa `f(x)=exp(x)`, `x=0` y `h=10**(-k)`, con `k=1,...,10`. La referencia es `f'(0)=1`. Calcula el error absoluto de ambas aproximaciones y representa error contra h en una gráfica logarítmica. Señala los errores que sean cero sin reemplazarlos por números inventados.
 
-Después ejecuta la rutina de Jacobi suministrada sobre `C(r)=[[1,r],[r,1]]`, para **r=0.2 y r=1.2**, con `b=C(r)(1,2)` y comienzo en cero. Usa el máximo de 200 iteraciones y las tolerancias de la rutina. Compara los historiales de residuo y relaciona convergencia o fallo con la dominancia diagonal. No presentes un agotamiento de iteraciones como solución.
+Identifica el mejor h ensayado para cada fórmula. Estima el orden observado a partir de los errores de h=0.1 y h=0.01; compara con los órdenes teóricos. Explica por qué hacer h más pequeño puede empeorar el resultado y distingue error del método de error de redondeo.
 
-**Entrega:** solución directa con residuo, una gráfica de los dos historiales y conclusión de tres a cinco frases.
+**Evidencia:** funciones, gráfica y tabla con mejor paso, error y orden observado.
 
-**Ampliación no evaluada:** determinante e inversa con LU, r=0.8 o método de potencias para comparar los autovalores de C.
+## 3. Encontrar una raíz y reconocer un fallo
 
-## 4. Resolver un cero y detectar un fallo · Electivo
+Elige `a` entre 2, 3 y 5. Implementa bisección para `f(x)=x²-a` en `[1,3]` y usa `sqrt(a)` únicamente como referencia para comprobar el resultado.
 
-Completa o adapta tu bisección para `f(x)=x²-2` en `[1,2]`. Compara con **un método a elección: Newton desde 1, secante desde 1 y 2, o Ridder en [1,2]**. Para el método de comparación puedes usar `scipy.optimize.root_scalar`.
+Tu función debe verificar el cambio de signo, admitir una raíz en un extremo, mantener el intervalo que encierra la raíz e informar si convergió. Exige simultáneamente semianchura `≤1e-8` y residuo `≤1e-8`, con máximo 100 iteraciones. Una raíz exacta permite cerrar el intervalo en ese punto.
 
-Usa tolerancia de posición `1e-10`, residuo `≤1e-10` y máximo 100 iteraciones. La bisección debe controlar la semianchura y el residuo; en la biblioteca verifica el residuo aunque esta informe convergencia. Registra raíz, error respecto a `sqrt(2)`, iteraciones y evaluaciones de f; si usas Newton, cuenta la derivada por separado con `Contador`.
+Entrega raíz, error respecto a la referencia, residuo, intervalo final e iteraciones. Ejecuta además dos controles: el intervalo `[3,4]`, que debe rechazarse, y la búsqueda válida limitada a dos iteraciones, que debe informar que no alcanzó las tolerancias. El programa debe continuar tras registrar esos fallos.
 
-Prueba también la bisección en `[2,3]`: debe rechazar el intervalo e informar el motivo sin detener todo el programa.
+**Evidencia:** implementación, tabla de la búsqueda y resultado de ambos controles. Explica por qué un residuo y un intervalo aportan información diferente.
 
-**Entrega:** rutina, tabla de los dos métodos, prueba de fallo y conclusión de tres a cinco frases. No se exige una gráfica en este experimento.
+## Entrega y sustentación
 
-**Ampliación no evaluada:** comparar todos los métodos, estudiar el ciclo de `g(x)=2/x`, minimizar por sección áurea o usar el ejemplo suministrado de Newton multidimensional/Broyden.
+Entrega un script o notebook que ejecute los tres ejercicios de principio a fin. Incluye las tablas, una gráfica y una conclusión de tres a cinco frases por ejercicio.
 
-## 5. Interpolar o ajustar · Electivo
+En la sustentación escrita explica una decisión de implementación en cada ejercicio: la actualización de la compensación, la combinación de pasos de Richardson y la condición de parada de bisección. Durante la revisión debes poder ejecutar tu programa, explicar una función seleccionada y anticipar el efecto de modificar un dato o una tolerancia. Una captura de resultados no sustituye el código ejecutable.
 
-Para `r(x)=1/(1+25x²)` en `[-1,1]`, toma **nueve nodos uniformes y nueve de Chebyshev con extremos**. Usa el interpolador baricéntrico suministrado y compara los dos interpolantes sobre una malla de 401 puntos. Reporta error máximo en esa malla y error en los nodos; grafica las dos curvas con la referencia.
-
-Con las nueve muestras uniformes, ajusta un polinomio de grado cuatro formando la matriz de diseño y las ecuaciones normales. Resuelve con `solve` o tu rutina de pivoteo. Añade su error de entrenamiento y de malla a la tabla. No uses `polyfit` ni `lstsq` en este paso: deben ser visibles las ecuaciones normales.
-
-**Entrega:** sistema de ajuste, tabla comparativa, una figura y conclusión de tres a cinco frases sobre qué representación usarías entre muestras.
-
-**Ampliación no evaluada:** 17 nodos, base monómica, Lagrange o ajuste de una recta.
-
-## Entrega y evaluación
-
-Entrega un solo notebook o script con los tres experimentos elegidos. Las figuras pueden ser paneles de una misma imagen. No se necesita informe separado, portada ni conclusiones de experimentos no elegidos.
+## Rúbrica
 
 | Criterio | Completo | Parcial | Inicial | Sin evidencia |
 | --- | --- | --- | --- | --- |
-| Experimento 1 | **30:** comparación, controles y explicación correctos | **21:** funcional, falta un control o interpretación | **9:** una ejecución útil, comparación insuficiente | **0:** no verificable |
-| Primer electivo | **30:** requisitos obligatorios completos y conclusión sustentada | **21:** falta una comprobación o interpretación | **9:** evidencia parcial con errores pendientes | **0:** no verificable |
-| Segundo electivo | **30:** requisitos obligatorios completos y conclusión sustentada | **21:** falta una comprobación o interpretación | **9:** evidencia parcial con errores pendientes | **0:** no verificable |
-| Reproducibilidad | **10:** ejecución completa y elecciones/procedencia claras | **7:** requiere un ajuste menor | **3:** reconstrucción incompleta | **0:** no se puede ejecutar |
+| Aritmética y Kahan · 25 | **25:** código propio, comparaciones y errores correctos; explica la pérdida de información | **17:** experimento válido con un diagnóstico incompleto | **7:** ejecución parcial o interpretación insuficiente | **0:** sin experimento verificable |
+| Derivación y paso · 25 | **25:** central y Richardson propios, barrido, órdenes y elección de h sustentados | **17:** resultados válidos con una comparación pendiente | **7:** calcula una derivada sin estudiar el paso | **0:** sin implementación verificable |
+| Bisección y controles · 30 | **30:** implementación propia, ambas tolerancias y los dos controles de fallo correctos | **21:** raíz válida con un control pendiente | **9:** procedimiento incompleto o convergencia no comprobada | **0:** no implementa la búsqueda |
+| Sustentación y reproducibilidad · 20 | **20:** ejecución completa y explicación de decisiones, resultados y cambio de parámetros | **14:** explicación coherente con una omisión menor | **6:** ejecución o explicación incompleta | **0:** no acredita cómo funciona el código entregado |
 
-El aporte es `M=R_m/100`, hasta **1 punto**. Las ampliaciones no compensan fallos del núcleo ni son necesarias para el nivel completo. Consulta la [distribución del parcial](../../assessments/README.md#segundo-parcial-talleres-y-exoneración): miércoles 1 punto, viernes 1 y proyecto opcional 3; las tres entregas completas permiten **5.0 y exoneración**.
+El aporte es `M=R_m/100`, hasta **1 punto**. Se aplican las [reglas del segundo parcial](../../assessments/README.md#segundo-parcial-talleres-y-exoneración).

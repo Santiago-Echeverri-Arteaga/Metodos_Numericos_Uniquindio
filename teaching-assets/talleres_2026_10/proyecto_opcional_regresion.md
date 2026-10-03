@@ -4,13 +4,19 @@
 
 En este proyecto integraremos los métodos vistos en clase con regresión lineal, Ridge y Lasso. Usaremos datos ruidosos para decidir qué desplazamiento produce una fuerza de **1 N** y justificar la confianza que merece esa decisión.
 
-Se entrega para evaluación antes del segundo parcial. Puedes reutilizar el código del miércoles y viernes; no hay que volver a implementarlo. La [plantilla](regresion_base.py) proporciona datos, partición, pipelines y búsquedas de hiperparámetros ya configuradas. Tu trabajo consiste en ejecutar una comparación válida, explicar el álgebra y verificar la decisión.
+Se entrega antes del segundo parcial, como trabajo individual independiente. El alcance corresponde a un proyecto breve de aproximadamente cuatro a seis horas, apoyado en el código propio desarrollado el miércoles y el viernes. Los tres trabajos integran una evaluación sobre cinco puntos.
 
-**El núcleo obligatorio son las cuatro secciones siguientes.** Las ampliaciones del final no dan puntos ni son necesarias para obtener la máxima valoración o la exoneración.
+Programa la generación de datos, la comparación, las comprobaciones y la decisión. Puedes usar NumPy, Matplotlib y los estimadores y herramientas de scikit-learn. Las rutinas numéricas solicitadas deben ser propias; reutiliza tus implementaciones anteriores e indica su procedencia. Consulta fórmulas y documentación y cita tus fuentes. No se acepta entregar código copiado del libro, del repositorio, de tutoriales o de otra persona. Debes explicar y sustentar el código entregado.
 
 ## 1. Datos y comparación de tres modelos
 
-El generador entrega 240 observaciones simuladas de fuerza en N, con entradas `z=x/L`, `L=0.02 m`, y `tau=(T-25)/10`, con T en °C. Ambas entradas están en [-1,1]. No son mediciones de un dispositivo real.
+Genera 240 observaciones simuladas de fuerza en N, con entradas `z=x/L`, `L=0.02 m`, y `tau=(T-25)/10`, con T en °C. Ambas entradas están en [-1,1]. No son mediciones de un dispositivo real.
+
+Usa la ley de fuerza sin ruido
+
+`F0(z,tau) = 0.1 + k*z + beta*z**3 + 0.3*tau*z + 0.2*tau`,
+
+y observaciones `y = F0(z,tau) + epsilon`, con ruido normal independiente de media cero y desviación estándar sigma. Con `numpy.random.default_rng(semilla)`, genera primero una matriz de tamaño `(240,2)` con entradas uniformes independientes en `[-1,1]` y luego los 240 errores normales. Implementa tú la función de fuerza y el generador.
 
 Elige antes de entrenar:
 
@@ -24,11 +30,11 @@ Elige antes de entrenar:
 
 Conserva estos parámetros durante la comparación. La fórmula del simulador sirve para generar datos y para la comprobación final; no uses sus coeficientes como solución del ajuste.
 
-Reserva **25 % para prueba**, con `random_state=2026`, usando la partición suministrada. Entrena **LinearRegression, Ridge y Lasso**, todos sobre la misma base polinómica de **grado 3** con interacciones. El grado queda fijo: no se exige buscar grados adicionales.
+Reserva **25 % para prueba**, con `random_state=2026`, y conserva los índices de la partición. Entrena **LinearRegression, Ridge y Lasso**, todos sobre la misma base polinómica de **grado 3** con interacciones. El grado queda fijo: no se exige buscar grados adicionales.
 
-El pipeline suministrado es `PolynomialFeatures(degree=3, include_bias=False) → StandardScaler → estimador(fit_intercept=True)`. Usa **tres pliegues** de validación cruzada, iguales para las tres familias, dentro del conjunto de entrenamiento. Las transformaciones se ajustan dentro de cada pliegue; no sobre todos los datos antes de validar. [Pipelines](https://scikit-learn.org/stable/modules/compose.html), [fuga de información](https://scikit-learn.org/stable/common_pitfalls.html).
+Construye un pipeline con la secuencia `PolynomialFeatures(degree=3, include_bias=False) → StandardScaler → estimador(fit_intercept=True)`. Usa **tres pliegues** de validación cruzada (`KFold`, `shuffle=True`, `random_state=2026`), iguales para las tres familias, dentro del conjunto de entrenamiento. Las transformaciones se ajustan dentro de cada pliegue; no sobre todos los datos antes de validar. [Pipelines](https://scikit-learn.org/stable/modules/compose.html), [fuga de información](https://scikit-learn.org/stable/common_pitfalls.html).
 
-Las búsquedas ya configuradas usan:
+Configura las búsquedas con `GridSearchCV` y estas opciones:
 
 - Ridge: `alpha = [0.0001, 0.01, 0.1, 1, 10]`.
 - Lasso: `alpha = [0.0001, 0.001, 0.003, 0.01, 0.1]`.
@@ -44,9 +50,9 @@ Reproduce el mejor Ridge sobre los datos de entrenamiento, aunque no sea la fami
 
 `(A.T @ A + alpha*D)c = A.T @ y`.
 
-Puedes reutilizar tu solucionador del viernes o usar `numpy.linalg.solve`. Aquí se evalúa la formulación y su comprobación, no una tercera implementación del mismo algoritmo. El intercepto no se penaliza. No formes la inversa.
+Resuelve con tu eliminación gaussiana con pivoteo del viernes. Puedes contrastar con `numpy.linalg.solve`. Justifica la matriz de penalización: el intercepto no se penaliza. No formes la inversa.
 
-Reporta el máximo residuo del sistema y la diferencia máxima entre tus predicciones y las de Ridge en entrenamiento; explica diferencias mayores de `1e-6 N`. Compara además `cond(A.T@A)` y `cond(A.T@A+alpha*D)`, usando `numpy.linalg.cond`. No es obligatorio estudiar QR, SVD ni reconstruir esos algoritmos.
+Reporta el máximo residuo del sistema y la diferencia máxima entre tus predicciones y las de Ridge en entrenamiento; explica diferencias mayores de `1e-6 N`. Compara además `cond(A.T@A)` y `cond(A.T@A+alpha*D)`, usando `numpy.linalg.cond`.
 
 Ridge minimiza `||y-Ac||² + alpha||c_sin_intercepto||²`; Lasso utiliza `||y-Ac||²/(2n) + alpha||c_sin_intercepto||_1`. Explica la diferencia entre penalizaciones y por qué Lasso no se obtiene agregando una constante a la diagonal. El mismo alpha no tiene una intensidad numéricamente equivalente en ambas convenciones. [Ridge](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html), [Lasso](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html).
 
@@ -70,29 +76,29 @@ Una vez fijadas todas las decisiones, evalúa los tres candidatos en la prueba r
 
 Consulta al final la fuerza sin ruido del simulador y calcula su posición para 1 N a la misma temperatura, reutilizando la bisección. Compara con la posición predicha y distingue error del modelo, error de búsqueda y ruido de las observaciones. Esta consulta no permite volver a seleccionar ni reajustar el modelo.
 
-Entrega un notebook o script ejecutable con parámetros, versiones e índices de partición. Reutiliza el generador; **no se exige adjuntar además un CSV ni un informe separado**. Incluye las dos tablas anteriores, los diagnósticos algebraicos, la figura de fuerza y una conclusión de **200 a 300 palabras** con la recomendación y sus límites.
+Entrega un notebook o script ejecutable con parámetros, versiones e índices de partición. Incluye el generador que programaste y las explicaciones dentro del mismo archivo. Incluye las dos tablas anteriores, los diagnósticos algebraicos, la figura de fuerza y una conclusión de **200 a 300 palabras** con la recomendación y sus límites.
 
-Dentro de la conclusión explica con tus palabras tres ideas de consulta: escalamiento/fuga de información, penalizaciones Ridge/Lasso y condicionamiento frente a capacidad predictiva. Cita las lecturas utilizadas. No hay una revisión bibliográfica adicional.
+Dentro de la conclusión explica con tus palabras tres ideas de consulta: escalamiento/fuga de información, penalizaciones Ridge/Lasso y condicionamiento frente a capacidad predictiva. Cita las lecturas utilizadas.
+
+## Sustentación
+
+Incluye una explicación de dónde se ajusta el escalador durante la validación, por qué no se penaliza el intercepto y cómo se relacionan pendiente y sensibilidad. En la revisión debes ejecutar el trabajo, explicar una función propia y anticipar qué ocurre al modificar la fuerza objetivo. Se valoran tus decisiones y la correspondencia entre lo que explicas y lo que ejecuta tu programa.
 
 ## Rúbrica
 
-La valoración R está sobre 100 y el aporte es **P=3R/100**. Se evalúa únicamente el núcleo obligatorio.
+La valoración R está sobre 100 y el aporte es **P=3R/100**.
 
 | Criterio | Completo | Parcial | Inicial | Sin evidencia |
 | --- | --- | --- | --- | --- |
-| Datos y reproducibilidad · 10 | **10:** parámetros, partición y ejecución reproducibles | **7:** una omisión menor | **3:** reconstrucción incompleta | **0:** no verificable |
-| Comparación y validación · 30 | **30:** tres familias, mismos pliegues, escalamiento correcto, selección por CV y prueba al final | **21:** comparación válida con un diagnóstico pendiente | **9:** comparación incompleta o sin validación verificable | **0:** sin comparación válida o usa prueba para entrenar/seleccionar |
-| Álgebra y regularización · 25 | **25:** reproduce Ridge, intercepto correcto, residuos y condición interpretados | **17:** formulación correcta con una comprobación pendiente | **7:** sistema reconocible sin contraste suficiente | **0:** penalización incorrecta o sin conexión algebraica |
-| Decisión numérica · 25 | **25:** bisección controlada, pendiente, perturbación y referencia final con unidades | **17:** decisión válida con una comprobación pendiente | **7:** una posición sin validación suficiente | **0:** no desarrolla la decisión |
-| Interpretación y consulta · 10 | **10:** recomendación sustentada, tres conceptos aplicados y fuentes | **7:** interpretación coherente con una omisión | **3:** describe herramientas sin conectar resultados | **0:** sin interpretación propia |
+| Datos y reproducibilidad · 10 | **10:** generador propio, parámetros, partición y ejecución reproducibles | **7:** una omisión menor | **3:** reconstrucción incompleta | **0:** no verificable |
+| Comparación y validación · 25 | **25:** tres familias, mismos pliegues, escalamiento correcto, selección por CV y prueba al final | **17:** comparación válida con un diagnóstico pendiente | **7:** comparación incompleta | **0:** sin comparación válida o usa prueba para entrenar/seleccionar |
+| Álgebra y regularización · 20 | **20:** reproduce Ridge con su solucionador, justifica intercepto e interpreta residuos y condición | **14:** formulación correcta con una comprobación pendiente | **6:** sistema reconocible sin contraste suficiente | **0:** penalización incorrecta o sin conexión algebraica |
+| Decisión numérica · 25 | **25:** bisección propia controlada, pendiente, perturbación y referencia final con unidades | **17:** decisión válida con una comprobación pendiente | **7:** posición sin validación suficiente | **0:** no desarrolla la decisión |
+| Interpretación y sustentación · 20 | **20:** recomendación razonada, fuentes, explica y ejecuta su código y justifica la modificación solicitada | **14:** explicación coherente con una omisión | **6:** describe herramientas sin justificar decisiones | **0:** sin interpretación propia ni sustentación verificable |
 
-No se penaliza detectar correctamente que el modelo no permite una decisión confiable. Las ampliaciones no son necesarias para 100/100.
+Detectar y explicar correctamente que el modelo no permite una decisión confiable puede obtener la valoración completa.
 
 La distribución es **miércoles 1 + viernes 1 + opcional 3 = 5.0**. Las tres entregas con valoración completa permiten la exoneración. Consulta la [regla de evaluación](../../assessments/README.md#segundo-parcial-talleres-y-exoneración) para los aportes parciales y el examen.
-
-## Ampliaciones de consulta, no evaluadas
-
-Quien quiera profundizar puede variar el grado, estudiar curvas de regularización, hacer bootstrap, comparar ecuaciones normales con `lstsq`, analizar el sistema Ridge con Jacobi/potencias o formular una inversión en dos variables con Newton/Broyden. No se exige ninguna de estas actividades y no aumentan la nota.
 
 ## Lecturas de partida
 

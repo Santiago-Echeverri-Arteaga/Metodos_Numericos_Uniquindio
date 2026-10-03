@@ -40,8 +40,8 @@ Las fuentes y decisiones de inclusión están registradas en
 
 ## Material de estudio
 
-- [Laboratorio computacional del miércoles 7 de octubre](teaching-assets/talleres_2026_10/miercoles_ejercicios.md) — dos horas; tres experimentos elegidos de un banco de cinco sobre los temas vistos en clase, hasta un punto del segundo parcial.
-- [Proyecto integrado del viernes 9 de octubre: equilibrio de un resorte](teaching-assets/taller_integrador_aproximacion.md) — dos variantes de dos horas, plantilla y rúbrica; la evaluable aporta hasta un punto al segundo parcial.
+- [Laboratorio computacional del miércoles 7 de octubre](teaching-assets/talleres_2026_10/miercoles_ejercicios.md) — dos horas; tres ejercicios de programación, comprobación y sustentación sobre los temas vistos en clase, hasta un punto del segundo parcial.
+- [Proyecto integrado del viernes 9 de octubre: equilibrio de un resorte](teaching-assets/taller_integrador_aproximacion.md) — dos horas de programación propia y sustentación; aporta hasta un punto al segundo parcial.
 - [Proyecto opcional: regresión y decisión de operación](teaching-assets/talleres_2026_10/proyecto_opcional_regresion.md) — regresión lineal, Ridge y Lasso; hasta tres puntos. Los tres talleres con valoración completa permiten la exoneración.
 - [Presentación general](teaching-assets/aulas_virtuales/00_presentacion_general_metodos_numericos.md)
 - [Unidad 1: error numérico](teaching-assets/aulas_virtuales/01_unidad_1_error_numerico.md)
