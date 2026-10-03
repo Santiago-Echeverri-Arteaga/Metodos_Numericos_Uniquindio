@@ -4,9 +4,9 @@
 
 En este proyecto integraremos los métodos vistos en clase con regresión lineal, Ridge y Lasso. Usaremos datos ruidosos para decidir qué desplazamiento produce una fuerza de **1 N** y justificar la confianza que merece esa decisión.
 
-Se entrega antes del segundo parcial, como trabajo individual independiente. El alcance corresponde a un proyecto breve de aproximadamente cuatro a seis horas, apoyado en el código propio desarrollado el miércoles y el viernes. Los tres trabajos integran una evaluación sobre cinco puntos.
+Se entrega antes del segundo parcial, como trabajo individual independiente. El alcance corresponde a un proyecto breve de aproximadamente cuatro a seis horas, apoyado en el código propio desarrollado el jueves y el viernes. Los tres trabajos integran una evaluación sobre cinco puntos.
 
-Programa la generación de datos, la comparación, las comprobaciones y la decisión. Puedes usar NumPy, Matplotlib y los estimadores y herramientas de scikit-learn. Las rutinas numéricas solicitadas deben ser propias; reutiliza tus implementaciones anteriores e indica su procedencia. Consulta fórmulas y documentación y cita tus fuentes. No se acepta entregar código copiado del libro, del repositorio, de tutoriales o de otra persona. Debes explicar y sustentar el código entregado.
+Programa la generación de datos, la comparación, las comprobaciones y la decisión. Puedes usar NumPy, Matplotlib y los estimadores y herramientas de scikit-learn. Reutiliza tus implementaciones y adaptaciones de los talleres anteriores e indica su procedencia, incluida la atribución al libro cuando corresponda. Consulta fórmulas y documentación y cita tus fuentes. La reutilización autorizada de los talleres anteriores debe estar identificada; el desarrollo del proyecto y sus comprobaciones son propios. Debes explicar y sustentar el código entregado.
 
 ## 1. Datos y comparación de tres modelos
 
@@ -98,7 +98,7 @@ La valoración R está sobre 100 y el aporte es **P=3R/100**.
 
 Detectar y explicar correctamente que el modelo no permite una decisión confiable puede obtener la valoración completa.
 
-La distribución es **miércoles 1 + viernes 1 + opcional 3 = 5.0**. Las tres entregas con valoración completa permiten la exoneración. Consulta la [regla de evaluación](../../assessments/README.md#segundo-parcial-talleres-y-exoneración) para los aportes parciales y el examen.
+La distribución es **jueves 1 + viernes 1 + opcional 3 = 5.0**. Las tres entregas con valoración completa permiten la exoneración. Consulta la [regla de evaluación](../../assessments/README.md#segundo-parcial-talleres-y-exoneración) para los aportes parciales y el examen.
 
 ## Lecturas de partida
 

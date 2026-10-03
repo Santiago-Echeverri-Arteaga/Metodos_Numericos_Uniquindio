@@ -81,24 +81,24 @@ peso en la nota del curso sigue siendo **33,3 %**; la escala de este parcial es 
 
 | Actividad | Valoración R sobre 100 | Aporte máximo |
 | --- | --- | ---: |
-| [Laboratorio computacional del miércoles 7/10](../teaching-assets/talleres_2026_10/miercoles_ejercicios.md) | R_m | 1 punto |
+| [Laboratorio computacional del jueves 8/10](../teaching-assets/talleres_2026_10/jueves_ejercicios.md) | R_j | 1 punto |
 | [Proyecto del viernes 9/10](../teaching-assets/taller_integrador_aproximacion.md) | R_v | 1 punto |
 | [Proyecto opcional de regresión](../teaching-assets/talleres_2026_10/proyecto_opcional_regresion.md) | R_p | 3 puntos |
 | **Total por talleres** | | **5 puntos** |
 
-Los aportes son `M=R_m/100`, `V=R_v/100` y `P=3R_p/100`.
+Los aportes son `J=R_j/100`, `V=R_v/100` y `P=3R_p/100`.
 **Los tres talleres con valoración completa (100/100 cada uno) dan 5.0 y
 exoneración del examen del segundo parcial.**
 
 Quien no realiza el proyecto opcional presenta el examen del segundo parcial,
 que aporta hasta **3 puntos**: si E es su nota sobre 5, el aporte es `0.6 E`.
-La nota resulta `M + V + 0.6 E`.
+La nota resulta `J + V + 0.6 E`.
 
 Si no se alcanza la exoneración, se presenta el examen, incluso si el proyecto
 opcional tiene valoración completa y alguno de los talleres de clase no. Se conserva el mejor aporte dentro del bloque
-de tres puntos: `nota = M + V + max(P, 0.6 E)`. No se suman proyecto y examen
+de tres puntos: `nota = J + V + max(P, 0.6 E)`. No se suman proyecto y examen
 como bloques independientes, ni se pierden los puntos ya obtenidos del proyecto.
-Por ejemplo, M=0.8, V=0.9, P=2.1 y E=4.0 producen `0.8+0.9+2.4=4.1`.
+Por ejemplo, J=0.8, V=0.9, P=2.1 y E=4.0 producen `0.8+0.9+2.4=4.1`.
 El máximo sigue siendo 5.0.
 
 Las entregas deben ser ejecutables y corresponder al trabajo individual. Las
@@ -106,8 +106,9 @@ rúbricas de cada enunciado determinan la valoración; completar archivos sin
 verificar resultados no equivale a obtener la totalidad de los puntos.
 
 La valoración incluye programación propia, comprobaciones e interpretación y
-sustentación del código. Los enunciados delimitan el trabajo del miércoles y del
+sustentación del código. Los enunciados delimitan el trabajo del jueves y del
 viernes para dos horas de clase cada uno. El proyecto opcional es independiente.
 Se permite reutilizar código propio de una entrega en las siguientes, indicando
-su procedencia. Consultar fórmulas y documentación no autoriza entregar rutinas
-copiadas del libro, del repositorio, de tutoriales o de otra persona.
+su procedencia. El jueves se parte de las rutinas del libro y se evalúan los
+experimentos, las adaptaciones y el diagnóstico propios. Los requisitos de
+autoría y reutilización de cada actividad se especifican en su enunciado.

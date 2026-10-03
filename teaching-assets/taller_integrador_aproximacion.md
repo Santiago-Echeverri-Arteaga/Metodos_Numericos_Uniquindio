@@ -19,9 +19,9 @@ Para evaluar la energía usa `u(z)=alpha*z²/(sqrt(1+alpha*z²)+1)-q*z` y explic
 
 ## Código y herramientas
 
-Escribe tu programa y sus funciones. Debes implementar **eliminación gaussiana con pivoteo parcial, evaluación de Lagrange y bisección**. Puedes incorporar tu bisección y tus diferencias del miércoles y tu eliminación gaussiana desarrollada previamente en clase, indicando su procedencia y verificando que cumplen los controles pedidos. Usa `math` y, si lo deseas, NumPy para organizar datos y Matplotlib para representar resultados; los solucionadores e interpoladores de biblioteca solo pueden emplearse para contrastar tus implementaciones.
+Escribe tu programa y sus funciones. Debes implementar **eliminación gaussiana con pivoteo parcial, evaluación de Lagrange y bisección**. Puedes incorporar la bisección que adaptaste y las diferencias que utilizaste el jueves, conservando la atribución al libro, y tu eliminación gaussiana desarrollada previamente en clase, indicando su procedencia y verificando que cumplen los controles pedidos. Usa `math` y, si lo deseas, NumPy para organizar datos y Matplotlib para representar resultados; los solucionadores e interpoladores de biblioteca solo pueden emplearse para contrastar tus implementaciones.
 
-Puedes consultar fórmulas y apuntes. No se admite entregar rutinas copiadas del libro, del repositorio, de tutoriales o de otra persona. Debes poder explicar y modificar el código que presentas.
+Puedes consultar fórmulas y apuntes. Fuera de la reutilización del taller del jueves autorizada arriba, las implementaciones solicitadas deben ser propias; no se admite entregar rutinas copiadas del libro, del repositorio, de tutoriales o de otra persona. Debes poder explicar y modificar el código que presentas.
 
 ## Construcción de la aproximación
 

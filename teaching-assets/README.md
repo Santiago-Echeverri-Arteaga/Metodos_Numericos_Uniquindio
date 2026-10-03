@@ -1,7 +1,7 @@
 # Material docente
 
 - `Clase1.pptx`: presentación de clase.
-- [Miércoles 7 de octubre: laboratorio computacional](talleres_2026_10/miercoles_ejercicios.md), con programación propia y sustentación.
+- [Jueves 8 de octubre: laboratorio computacional](talleres_2026_10/jueves_ejercicios.md), con programación propia y sustentación.
 - [Viernes 9 de octubre: proyecto de equilibrio](taller_integrador_aproximacion.md), con programación propia, sustentación y rúbrica.
 - [Proyecto opcional de regresión](talleres_2026_10/proyecto_opcional_regresion.md): hasta tres puntos y ruta de exoneración.
 - [Guía de entregas y alcance](talleres_2026_10/README.md), con requisitos y criterios de evaluación.
